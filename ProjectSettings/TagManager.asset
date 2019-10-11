@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags: []
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Ships
+    uniqueID: 3567616071
+    locked: 0
+  - name: Rooms
+    uniqueID: 3943562175
+    locked: 0
+  - name: Weapons
+    uniqueID: 455874663
+    locked: 0
+  - name: Red Bar
+    uniqueID: 1626010067
+    locked: 0
+  - name: Green Bar
+    uniqueID: 2808569687
+    locked: 0
+  - name: Projectiles
+    uniqueID: 2743749739
+    locked: 0
