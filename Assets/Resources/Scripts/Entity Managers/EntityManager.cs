@@ -10,6 +10,7 @@ public abstract class EntityManager
     public EntityManager(Entity owner)
     {
         this.owner = owner;
+        this.maxSize = 10000; //arbitrary number where the manager practically doesn't have a max size
     }
 
     public EntityManager(Entity owner, int maxSize)
@@ -21,6 +22,11 @@ public abstract class EntityManager
     public Entity Get(int i)
     {
         return entities[i];
+    }
+
+    public List<Entity> GetAll()
+    {
+        return entities;
     }
 
     public Entity Set(int i, Entity entity)
@@ -65,7 +71,7 @@ public abstract class EntityManager
         return maxSize;
     }
 
-    public int GetCurrentSize()
+    public int Size()
     {
         return entities.Count;
     }

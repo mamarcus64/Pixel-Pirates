@@ -6,7 +6,7 @@ public class Ship : Entity
 {
     protected WeaponManager weaponManager;
     protected List<Vector2> weaponPositions = new List<Vector2>();
-    protected List<Room> rooms = new List<Room>();
+    protected RoomManager roomManager;
     protected List<Vector3> roomPositions = new List<Vector3>();
     protected List<GameObject> healthBar = new List<GameObject>();
     protected Shield shield;
@@ -14,19 +14,20 @@ public class Ship : Entity
     public void ShipStart()
     {
         weaponManager = new WeaponManager(this);
+        roomManager = new RoomManager(this);
         layer = "Ships";
         EntityStart();
         wantsFocus = false;
         foreach (Vector3 room in roomPositions)
         {
             if(room.z == 0)
-                rooms.Add(obj.AddComponent<SingleRoom>());
+                roomManager.Add(obj.AddComponent<SingleRoom>());
             else if (room.z == 1)
-                rooms.Add(obj.AddComponent<LongRoom>());
+                roomManager.Add(obj.AddComponent<LongRoom>());
             else if (room.z == 2)
-                rooms.Add(obj.AddComponent<TallRoom>());
+                roomManager.Add(obj.AddComponent<TallRoom>());
             else if (room.z == 3)
-                rooms.Add(obj.AddComponent<BigRoom>());
+                roomManager.Add(obj.AddComponent<BigRoom>());
 
         }
         for (int i = 0; i < health; i++) {
@@ -47,10 +48,11 @@ public class Ship : Entity
         weaponManager.Place(weaponPositions[0], 0);
         weaponManager.Place(weaponPositions[1], 1);
        
-        for (int i = 0; i < rooms.Count; i++)
+        for (int i = 0; i < roomManager.Size(); i++)
         {
-            rooms[i].SetParent(this);
-            rooms[i].SetLocation(roomPositions[i].x * rooms[i].getWidth(), roomPositions[i].y * rooms[i].GetHeight());
+            roomManager.Get(i).SetParent(this);
+            roomManager.Get(i).SetLocation(roomPositions[i].x * roomManager.Get(i).getWidth(), 
+                roomPositions[i].y * roomManager.Get(i).GetHeight());
         }
         for (int i = 0; i < healthBar.Count; i++)
         {
@@ -58,12 +60,12 @@ public class Ship : Entity
             Resize(0.25f, 0.25f, healthBar[i]);
             SetLocation(-width / 3 + 0.3f * i, height / 3, GetZPosition("Green Bar"), healthBar[i]);
         }
-        rooms[0].AttachWeapon(weaponManager.Get(0) as Weapon);
-        rooms[1].AttachWeapon(weaponManager.Get(1) as Weapon);
+        (roomManager.Get(0) as Room).AttachWeapon(weaponManager.Get(0) as Weapon);
+        (roomManager.Get(1) as Room).AttachWeapon(weaponManager.Get(1) as Weapon);
 
         crew.SetParent(this);
         crew.SetPlayerOwned(true);
-        crew.GoToRoom(rooms[2]);
+        crew.GoToRoom(roomManager.Get(2) as Room);
     }
 
     public override void TakeDamage(int damage)
@@ -92,6 +94,9 @@ public class Ship : Entity
 
     public List<Room> getRooms()
     {
+        List<Room> rooms = new List<Room>();
+        foreach (Entity e in roomManager.GetAll())
+            rooms.Add(e as Room);
         return rooms;
     }
     

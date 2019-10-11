@@ -8,7 +8,7 @@ public class CrewMember : Entity
     {
         health = 10;
         layer = "Crew";
-        spritePath = "Sprites/Misc/green bar";
+        spritePath = "Sprites/Crew/demo crew";
         width = 0.5f;
         height = 0.5f;
         wantsFocus = true;
