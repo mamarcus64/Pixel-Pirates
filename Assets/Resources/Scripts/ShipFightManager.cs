@@ -10,8 +10,8 @@ public class ShipFightManager : MonoBehaviour
     void Start()
     {
         paused = false;
-        playerShip = gameObject.AddComponent<DemoShip>();
-        enemyShip = gameObject.AddComponent<DemoShip>();
+        playerShip = gameObject.AddComponent<BasicShip>();
+        enemyShip = gameObject.AddComponent<BasicShip>();
         StartCoroutine(Load());
     }
 
