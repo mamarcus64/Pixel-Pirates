@@ -62,10 +62,18 @@ public class Ship : Entity
         }
         (roomManager.Get(0) as Room).AttachWeapon(weaponManager.Get(0) as Weapon);
         (roomManager.Get(1) as Room).AttachWeapon(weaponManager.Get(1) as Weapon);
-
+        
         crew.SetParent(this);
+        crew.SetShip(this);
         crew.SetPlayerOwned(true);
-        crew.GoToRoom(roomManager.Get(2) as Room);
+        crew.SetLocation(-0.25f, 0);
+        crew.SetRoom(roomManager.Get(3) as Room);
+        //crew.GoToRoom(roomManager.Get(2) as Room);
+    }
+
+    public RoomManager GetRoomManager()
+    {
+        return roomManager;
     }
 
     public override void TakeDamage(int damage)

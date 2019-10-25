@@ -11,13 +11,15 @@ public class DemoWeapon : Weapon
         height = 1;
         spritePath = "Sprites/Weapons/demo cannon";
         WeaponStart();
-        cooldown = 0.5f;
+        cooldown = 2f;
     }
 
     void Update()
     {
+
         if (!ShipFightManager.paused)
-            WeaponUpdate(); 
+            WeaponUpdate();
+       
     }
 
     public override void OnFocusClick(Entity entity)

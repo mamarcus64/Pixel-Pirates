@@ -23,8 +23,9 @@ public class InputManager : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     InputManager.GiveFocus(hits[0].collider.gameObject.GetComponent<EntityProxy>().GetEntity());
-                    Debug.Log(hits[0].collider.gameObject.GetComponent<EntityProxy>().GetEntity().GetType().Name + " pressed at position: "
-                        + hits[0].collider.gameObject.transform.position);
+                    if(DebugToggler.inputClick)
+                        Debug.Log(hits[0].collider.gameObject.GetComponent<EntityProxy>().GetEntity().GetType().Name + " pressed at position: "
+                            + hits[0].collider.gameObject.transform.position);
                 }
             }
             else if(Input.GetMouseButton(0))

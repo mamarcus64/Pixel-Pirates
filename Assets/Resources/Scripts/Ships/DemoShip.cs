@@ -20,10 +20,10 @@ public class DemoShip : Ship
         roomPositions.Add(new Vector3(-1, 0.75f, 3));
         roomPositions.Add(new Vector3(-1, 0, 1));
         roomPositions.Add(new Vector3(0, 0, 1));
-        roomPositions.Add(new Vector3(-0.25f, -0.75f, 2));
-        roomPositions.Add(new Vector3(-0.25f, 0.75f, 2));
-        roomPositions.Add(new Vector3(0.25f, -0.75f, 2));
-        roomPositions.Add(new Vector3(0.25f, 0.75f, 2));
+        roomPositions.Add(new Vector3(-0.5f, -0.75f, 2));
+        roomPositions.Add(new Vector3(-0.5f, 0.75f, 2));
+        roomPositions.Add(new Vector3(0.5f, -0.75f, 2));
+        roomPositions.Add(new Vector3(0.5f, 0.75f, 2));
         ShipStart();
 
         weaponManager.Add(obj.AddComponent<DemoWeapon>());

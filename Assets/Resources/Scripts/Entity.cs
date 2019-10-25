@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class Entity : MonoBehaviour
 {
     public static float bufferTime = 0.0001f;
+    public static float epsilon = 0.01f;
     protected GameObject obj;
     protected SpriteRenderer mRenderer;
     protected Collider2D mCollider;
@@ -16,7 +17,6 @@ public abstract class Entity : MonoBehaviour
     protected Vector3 localPosition;
     protected bool playerOwned = false;
     public bool wantsFocus = false;
-
     public static float GetZPosition(string name)
     {
         switch(name)
@@ -39,11 +39,13 @@ public abstract class Entity : MonoBehaviour
         if(obj != null)
             localPosition = obj.transform.localPosition;
         obj = new GameObject(this.GetType().Name);
+        if (DebugToggler.entityCreated)
+            Debug.Log("New " + this.GetType().Name + " created");
         mRenderer = obj.AddComponent<SpriteRenderer>();
         mRenderer.sprite = Resources.Load<Sprite>(spritePath);
         Resize(width, height);
         mCollider = obj.AddComponent<PolygonCollider2D>();
-        mCollider.isTrigger = true;
+        mCollider.isTrigger = true; //is unnecessary??
         obj.AddComponent<EntityProxy>().ChangeEntity(this);
         outline = obj.AddComponent<SpriteOutline>();
         mRenderer.material = Resources.Load<Material>("Sprites/SpritesOutline");
@@ -70,8 +72,12 @@ public abstract class Entity : MonoBehaviour
 
     public void EntityUpdate()
     {
-        if (obj != null)
+        if (obj != null) {
+
             localPosition = obj.transform.localPosition;
+            Vector3 parentScale = this.GetParentScale();
+            localPosition = new Vector3(localPosition.x * parentScale.x, localPosition.y * parentScale.y, localPosition.z * parentScale.z);
+        }
     }
 
     public void Resize(float x, float y)
@@ -113,6 +119,7 @@ public abstract class Entity : MonoBehaviour
             t = t.parent;
         }
         return result;
+       
     }
 
     public GameObject GetObject()
@@ -252,7 +259,7 @@ public abstract class Entity : MonoBehaviour
     }
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("collided");
+        
     }
 
     public void Die()

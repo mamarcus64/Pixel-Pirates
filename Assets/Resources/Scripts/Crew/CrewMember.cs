@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class CrewMember : Entity
 {
+    protected Path path;
+    protected Ship ship;
+    protected Room currentRoom;
+    protected float speed = 2.5f;
     void Start()
     {
         health = 10;
@@ -14,25 +18,62 @@ public class CrewMember : Entity
         wantsFocus = true;
         EntityStart();
     }
+    int x = 0;
     void Update()
     {
+
         if (!ShipFightManager.paused)
         {
             EntityUpdate();
+            if (path != null && path.hasCurrent())
+                Move();
         }
     }
 
     public override void OnFocusClick(Entity entity)
     {
-        Debug.Log("crew clicked");
         if (entity is Room room)
         {
-            GoToRoom(room);
+            if(room != currentRoom)
+                GoToRoom(room);
        }
+    }
+
+    public void Move()
+    {
+        while (path.hasNext())
+            SetLocation(path.NextPoint());
+        /*
+        Vector2 direction = new Vector2(-this.localPosition.x + path.CurrentPoint().x, -this.localPosition.y + path.CurrentPoint().y).normalized;
+        Vector2 magnitude = new Vector2(direction.x * speed * Time.deltaTime, direction.y * speed * Time.deltaTime);
+        if (Vector2.Distance(path.CurrentPoint(), localPosition) < magnitude.magnitude)
+        {
+            SetLocation(path.CurrentPoint().x, path.CurrentPoint().y);
+            path.NextPoint();
+        }
+        SetLocation(localPosition.x + magnitude.x, localPosition.y + magnitude.y);
+        */
+        
+    }
+
+    public void SetShip(Ship ship)
+    {
+        this.ship = ship;
+    }
+
+    public void SetRoom(Room room)
+    {
+        currentRoom = room;
+        currentRoom.AddCrew(this);
     }
 
     public void GoToRoom(Room room)
     {
-        this.SetLocation(room.GetLocalPosition());   
+        if (currentRoom == null)
+            path = Path.GetPath(ship.GetRoomManager(), new Vector2(0, 0), room.AddCrew(this));
+        else
+            path = Path.GetPath(ship.GetRoomManager(), currentRoom.RemoveCrew(this), room.AddCrew(this));
+            //new Path(room.AddCrew(this));
+        currentRoom = room;
     }
 }
