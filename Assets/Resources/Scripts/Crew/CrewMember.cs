@@ -16,6 +16,7 @@ public class CrewMember : Entity
         width = 0.5f;
         height = 0.5f;
         wantsFocus = true;
+        path = null;
         EntityStart();
     }
     int x = 0;
@@ -25,8 +26,10 @@ public class CrewMember : Entity
         if (!ShipFightManager.paused)
         {
             EntityUpdate();
-            if (path != null && path.hasCurrent())
+            if (path != null && path.HasCurrent())
+            {
                 Move();
+            }
         }
     }
 
@@ -41,19 +44,25 @@ public class CrewMember : Entity
 
     public void Move()
     {
-        while (path.hasNext())
-            SetLocation(path.NextPoint());
-        /*
-        Vector2 direction = new Vector2(-this.localPosition.x + path.CurrentPoint().x, -this.localPosition.y + path.CurrentPoint().y).normalized;
-        Vector2 magnitude = new Vector2(direction.x * speed * Time.deltaTime, direction.y * speed * Time.deltaTime);
-        if (Vector2.Distance(path.CurrentPoint(), localPosition) < magnitude.magnitude)
-        {
-            SetLocation(path.CurrentPoint().x, path.CurrentPoint().y);
-            path.NextPoint();
-        }
-        SetLocation(localPosition.x + magnitude.x, localPosition.y + magnitude.y);
-        */
-        
+            Vector2 direction = new Vector2(-this.localPosition.x + path.CurrentPoint().x, -this.localPosition.y + path.CurrentPoint().y).normalized;
+            Vector2 magnitude = new Vector2(direction.x * speed * Time.deltaTime, direction.y * speed * Time.deltaTime);
+        if (Vector2.Distance(path.CurrentPoint(), localPosition) <= magnitude.magnitude)
+            {
+                
+                SetLocation(path.CurrentPoint().x, path.CurrentPoint().y);
+            if (path.HasNext())
+            {
+                path.NextPoint();// Debug.Log(path.NextPoint());
+            }
+            else
+            {
+                //Debug.Log(path);
+                path = null;
+                //Debug.Log("path finished");
+            }
+
+            }
+            SetLocation(localPosition.x + magnitude.x, localPosition.y + magnitude.y);
     }
 
     public void SetShip(Ship ship)
@@ -73,7 +82,6 @@ public class CrewMember : Entity
             path = Path.GetPath(ship.GetRoomManager(), new Vector2(0, 0), room.AddCrew(this));
         else
             path = Path.GetPath(ship.GetRoomManager(), currentRoom.RemoveCrew(this), room.AddCrew(this));
-            //new Path(room.AddCrew(this));
         currentRoom = room;
     }
 }

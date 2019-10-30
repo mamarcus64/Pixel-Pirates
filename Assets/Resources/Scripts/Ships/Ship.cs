@@ -51,7 +51,7 @@ public class Ship : Entity
         for (int i = 0; i < roomManager.Size(); i++)
         {
             roomManager.Get(i).SetParent(this);
-            roomManager.Get(i).SetLocation(roomPositions[i].x * roomManager.Get(i).getWidth(), 
+            roomManager.Get(i).SetLocation(roomPositions[i].x * roomManager.Get(i).GetWidth(), 
                 roomPositions[i].y * roomManager.Get(i).GetHeight());
         }
         for (int i = 0; i < healthBar.Count; i++)

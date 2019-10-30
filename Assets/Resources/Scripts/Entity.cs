@@ -192,7 +192,7 @@ public abstract class Entity : MonoBehaviour
         }
     }
 
-    public float getWidth()
+    public float GetWidth()
     {
         return width;
     }
@@ -266,6 +266,12 @@ public abstract class Entity : MonoBehaviour
     {
         Destroy(obj);
         Destroy(this);
+    }
+
+    override
+    public string ToString()
+    {
+        return this.GetType().Name + " at position: " + this.localPosition;
     }
 }
 

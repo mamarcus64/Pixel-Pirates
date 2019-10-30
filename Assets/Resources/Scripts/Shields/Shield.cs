@@ -52,7 +52,7 @@ public class Shield : Entity
         if (obj != null)
             localPosition = obj.transform.localPosition;
         SetLocation(0, 0);
-        Resize(mShip.getWidth() + 4, mShip.GetHeight() + 3.5f);
+        Resize(mShip.GetWidth() + 4, mShip.GetHeight() + 3.5f);
         //Destroy(obj.GetComponent<PolygonCollider2D>());
        // mCollider = null;
         //ellipseCollider = obj.AddComponent<EllipseCollider2D>();

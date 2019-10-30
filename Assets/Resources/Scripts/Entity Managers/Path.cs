@@ -1,20 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Path is the class that represents crew movement; very similar to a single linked list
+/// </summary>
 public class Path
 {
     List<Vector2> points = new List<Vector2>();
     int currentPoint = 0;
 
+    override
+    public string ToString()
+    {
+        string result = "";
+        foreach (Vector2 point in points)
+            result += point + "  ";
+        return result;
+    }
+
     public Path()
     {
        
-    }
-
-    public Path(Vector2 point)
-    {
-        points.Add(point);
     }
 
     public Path(List<Vector2> points)
@@ -26,12 +32,12 @@ public class Path
         return points[currentPoint];
     }
 
-    public bool hasNext()
+    public bool HasNext()
     {
         return currentPoint < points.Count - 1;
     }
 
-    public bool hasCurrent()
+    public bool HasCurrent()
     {
         return currentPoint < points.Count;
     }
@@ -41,14 +47,26 @@ public class Path
         currentPoint++;
         return points[currentPoint];
     }
-
+    /// <summary>
+    /// uses A-star path-finding
+    /// NOTE: look at the conversion between "world" and "grid" coordinate systems - very important to understand
+    /// "world" coordinate is the local position of each room cell relative to the parent ship
+    /// "grid" coordinate is changing that to a positive integer to be used in a 2D array
+    /// </summary>
+    /// <param name="roomManager"> pass in a room manager so that the room offset for the particular ship is kept</param>
+    /// <param name="vectorStart"> start of path, in WORLD coordinates </param>
+    /// <param name="vectorEnd"> end of path, in WORLD coordinates </param>
+    /// <returns></returns>
     public static Path GetPath(RoomManager roomManager, Vector2 vectorStart, Vector2 vectorEnd)
     {
         Node[][] grid = ToNodeGrid(roomManager.GetRoomLayout(), roomManager);
         Node start = new Node(vectorStart);
-        Debug.Log("start pos:" + new Vector2(start.x, start.y));
         Node end = new Node(vectorEnd);
-        Debug.Log("end pos:" + new Vector2(end.x, end.y));
+        start.g = 0;
+        start.h = Vector2.Distance(start.ToVector(), end.ToVector());
+        if(DebugToggler.pathCreated)
+            Debug.Log("start pos:" + new Vector2(start.x, start.y) + ", end pos:" + new Vector2(end.x, end.y));
+        //pretty standard A-star code, look it up online for more detail as to what is going on
         List<Node> path = new List<Node>();
         List<Node> openSet = new List<Node>();
         List<Node> closedSet = new List<Node>();
@@ -56,29 +74,33 @@ public class Path
         while (openSet.Count > 0)
         {
             Node current = openSet[0];
-            foreach (Node node in openSet)
+            foreach (Node node in openSet) {
                 if (node.GetF() < current.GetF())
                     current = node;
-            current.AddNeighbors(grid, roomManager.WorldToGrid(current.x, current.y));
-            openSet.Remove(current);
-            closedSet.Add(current);
-            path = new List<Node>(); //re-initialize every time as it finds a better path
-            path.Add(current);
-            Node parent = current.previous;
-            while (parent != null)
-            {
-                path.Add(parent);
-                parent = parent.previous;
+                //^^same as just selecting node with lowest F-score in openSet
             }
-            if (current == end)
+            if (Vector2.Distance(current.ToVector(), end.ToVector()) < 0.01f) //I can't use .equals() or == b/c float math has rounding errors
             {
+                
+                path.Add(current);
+                Node parent = current.previous;
+                while (parent != null)
+                {
+                    path.Add(parent);
+                    parent = parent.previous;
+                }
                 break;
             }
+            current.AddNeighbors(grid, roomManager.WorldToGrid(current.x, current.y));
+            closedSet.Add(current);
+            openSet.Remove(current);
             foreach (Node neighbor in current.neighbors)
             {
-                if (closedSet.Contains(neighbor) || neighbor.isWall)
+                if (neighbor.isWall)
+                    closedSet.Add(neighbor);
+                if (closedSet.Contains(neighbor))
                     continue;
-                if (Distance(neighbor, current) > 1) //diagonal
+                if (Distance(roomManager.WorldToGrid(neighbor.ToVector()), roomManager.WorldToGrid(current.ToVector())) > 1) //diagonal-neighbor
                 {
                     Vector2 currentPoint = roomManager.WorldToGrid(current.x, current.y);
                     Vector2 neighborPoint = roomManager.WorldToGrid(neighbor.x, neighbor.y);
@@ -86,7 +108,7 @@ public class Path
                         grid[(int)(neighborPoint.x)][(int)(currentPoint.y)].isWall)
                         continue;
                 }
-                float tempG = current.g + Distance(neighbor, current);
+                float tempG = current.g + Distance(neighbor.ToVector(),current.ToVector());
                 if (openSet.Contains(neighbor))
                 {
                     if (neighbor.g > tempG)
@@ -99,11 +121,22 @@ public class Path
                 }
                 else
                 {
-                    neighbor.g = tempG;
                     openSet.Add(neighbor);
-                    neighbor.h = Distance(neighbor, end);
+                    neighbor.g = tempG;  
+                    neighbor.h = Distance(neighbor.ToVector(), end.ToVector());
                     neighbor.previous = current;
                 }
+            }
+            if (openSet.Count == 0)
+            {
+                path.Add(current);
+                Node parent = current.previous;
+                while (parent != null)
+                {
+                    path.Add(parent);
+                    parent = parent.previous;
+                }
+                break;
             }
         }
         path.Reverse();
@@ -111,17 +144,23 @@ public class Path
         foreach (Node node in path)
         {
             vectorPath.Add(node.ToVector());
-            Debug.Log("Node: " + node.ToVector() + ", grid: " + roomManager.WorldToGrid(node.ToVector()));
         }
         Path result = new Path(vectorPath);
         return result;
     }
 
-    static float Distance(Node a, Node b)
+    static float Distance(Vector2 a, Vector2 b)
     {
         return (Mathf.Sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)));
+        //mf Pythagoras going hard
     }
 
+    /// <summary>
+    /// in context, gets the bool grid from a method in the roomManager
+    /// </summary>
+    /// <param name="grid"></param>
+    /// <param name="roomManager"></param>
+    /// <returns></returns>
     static Node[][] ToNodeGrid(bool[][] grid, RoomManager roomManager)
     {
         Node[][] result = new Node[grid.Length][];
@@ -131,7 +170,7 @@ public class Path
             for (int j = 0; j < result[0].Length; j++)
             {
                 result[i][j] = new Node(roomManager.GridToWorld(i, j));
-                result[i][j].isWall = false;// !grid[i][j];
+                result[i][j].isWall = !(grid[i][j]);
             }
         return result;
     }
@@ -140,9 +179,10 @@ public class Path
 class Node
 {
     public float x;
-    public float y; //actual coordinates in space
+    public float y; //actual coordinates in space, not "grid" coordinates
     public float g = 100000;
     public float h = 100000;
+    //set to some insanely high number until it is "explored" by algorithm
     public bool isWall = false;
     public List<Node> neighbors = new List<Node>();
     public Node previous = null;
@@ -159,10 +199,20 @@ class Node
         this.y = y;
     }
 
+    override
+    public string ToString()
+    {
+        return ToVector().ToString();
+    }
     public Vector2 ToVector()
     {
         return new Vector2(x, y);
     }
+    /// <summary>
+    /// looks at neighboring Nodes in the grid
+    /// </summary>
+    /// <param name="grid"></param>
+    /// <param name="gridPoint"></param>
     public void AddNeighbors(Node[][] grid, Vector2 gridPoint)
     {
         if (gridPoint.x > 0)

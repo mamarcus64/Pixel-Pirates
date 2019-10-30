@@ -78,6 +78,11 @@ public abstract class Room : Entity
         return cells;
     }
 
+    /// <summary>
+    /// adds given crew to the first available spot in the cells list
+    /// </summary>
+    /// <param name="member"></param>
+    /// <returns></returns>
     public Vector2 AddCrew(CrewMember member)
     {
         if (cells.Count == 0)
