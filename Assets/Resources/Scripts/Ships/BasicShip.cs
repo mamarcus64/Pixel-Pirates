@@ -21,6 +21,8 @@ public class BasicShip : Ship {
         roomPositions.Add(new Vector3(-0.5f, 0.75f, 2));
         roomPositions.Add(new Vector3(0.5f, -0.75f, 2));
         roomPositions.Add(new Vector3(0.5f, 0.75f, 2));
+        roomPositions.Add(new Vector3(-2, -0.75f, 3));
+        roomPositions.Add(new Vector3(-2.5f, 0, 1));
         ShipStart();
 
 		weaponManager.Add(obj.AddComponent<DemoWeapon>());

@@ -23,14 +23,25 @@ public class RoomManager : EntityManager
         bool[][] result = new bool[gridWidth][];
         for(int i = 0; i < result.Length; i++)
             result[i] = new bool[gridHeight];
+
+        foreach (Vector2 cell in GetAllCells()) {
+            Vector2 grid = WorldToGrid(cell.x, cell.y);
+            result[(int)(grid.x)][(int)(grid.y)] = true;
+        }
+        return result;
+    }
+
+    public List<Vector2> GetAllCells()
+    {
+        List<Vector2> result = new List<Vector2>();
         foreach (Entity entity in entities)
         {
             Room room = entity as Room;
             if (room.GetCells().Count == 0)
                 room.SetSpots();
-            foreach (Vector2 cell in room.GetCells()) {
-                Vector2 grid = WorldToGrid(cell.x, cell.y);
-                result[(int)(grid.x)][(int)(grid.y)] = true;
+            foreach (Vector2 cell in room.GetCells())
+            {
+                result.Add(cell);
             }
         }
         return result;

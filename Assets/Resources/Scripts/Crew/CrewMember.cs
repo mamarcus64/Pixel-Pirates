@@ -7,7 +7,7 @@ public class CrewMember : Entity
     protected Path path;
     protected Ship ship;
     protected Room currentRoom;
-    protected float speed = 2.5f;
+    protected float speed = 1.5f;
     void Start()
     {
         health = 10;
@@ -78,10 +78,19 @@ public class CrewMember : Entity
 
     public void GoToRoom(Room room)
     {
-        if (currentRoom == null)
+        Vector2 removedLocation = currentRoom.RemoveCrew(this);
+        if (currentRoom == null) //just in case something goes terribly wrong
             path = Path.GetPath(ship.GetRoomManager(), new Vector2(0, 0), room.AddCrew(this));
-        else
-            path = Path.GetPath(ship.GetRoomManager(), currentRoom.RemoveCrew(this), room.AddCrew(this));
+        else if (Vector2.Distance(removedLocation, localPosition) < Room.cellWidth / 2) //if crew has fully completed its previous path
+            path = Path.GetPath(ship.GetRoomManager(), removedLocation, room.AddCrew(this));
+        else //if the crew is redirected while still traveling on its previous path
+        {
+            Vector2 closestCell = new Vector2(0, 0);
+            foreach (Vector2 cell in ship.GetRoomManager().GetAllCells())
+                if (Vector2.Distance(cell, localPosition) < Vector2.Distance(closestCell, localPosition))
+                    closestCell = cell;
+            path = Path.GetPath(ship.GetRoomManager(), closestCell, room.AddCrew(this));
+        }
         currentRoom = room;
     }
 }
