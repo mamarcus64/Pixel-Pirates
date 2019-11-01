@@ -138,6 +138,7 @@ public class Path
                 }
                 break;
             }
+            
         }
         path.Reverse();
         List<Vector2> vectorPath = new List<Vector2>();
@@ -146,6 +147,8 @@ public class Path
             vectorPath.Add(node.ToVector());
         }
         Path result = new Path(vectorPath);
+        if (DebugToggler.pathShown)
+            Debug.Log(result);
         return result;
     }
 

@@ -13,6 +13,7 @@ public class BasicShip : Ship {
         //the third value is essentially an enum that corresponds to the type of room; 0 = 1x1 (single) room, 1 = 2x1 (long) room, 
         //2 = 1x2 (tall) room and 3 = 2x2 (big) room; to be honest, because rooms are not going to change from copies of the same ship,
         //the room positions can just be manually entered in code every time for however many types of ships we will design
+        /*
         roomPositions.Add(new Vector3(-1, -0.75f, 3));
         roomPositions.Add(new Vector3(-1, 0.75f, 3));
         roomPositions.Add(new Vector3(-1, 0, 1));
@@ -23,9 +24,16 @@ public class BasicShip : Ship {
         roomPositions.Add(new Vector3(0.5f, 0.75f, 2));
         roomPositions.Add(new Vector3(-2, -0.75f, 3));
         roomPositions.Add(new Vector3(-2.5f, 0, 1));
+        */
+        roomPositions.Add(new Vector3(-1, 0, 1));
+        roomPositions.Add(new Vector3(-1, 1, 1));
+        roomPositions.Add(new Vector3(-1, 3, 2));
+        roomPositions.Add(new Vector3(0, 3, 2));
+        //roomPositions.Add(new Vector3(-1, 0, 1));
         ShipStart();
+        roomManager.SetOffset(new Vector2(0, -0.5f));
 
-		weaponManager.Add(obj.AddComponent<DemoWeapon>());
+        weaponManager.Add(obj.AddComponent<DemoWeapon>());
 		weaponManager.Add(obj.AddComponent<DemoWeapon>());
 
 		weaponPositions.Add(new Vector2(-1, 1.25f));

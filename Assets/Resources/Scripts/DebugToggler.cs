@@ -8,4 +8,5 @@ public class DebugToggler
     public static bool inputClick = false;
     public static bool entityCreated = false;
     public static bool pathCreated = false;
+    public static bool pathShown = false;
 }

@@ -11,6 +11,7 @@ public class Ship : Entity
     protected List<GameObject> healthBar = new List<GameObject>();
     protected Shield shield;
     CrewMember crew;
+    CrewMember crew2ElectricBugaloo;
     public void ShipStart()
     {
         weaponManager = new WeaponManager(this);
@@ -35,6 +36,7 @@ public class Ship : Entity
             healthBar[i].AddComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Misc/green bar");
         }
         crew = obj.AddComponent<CrewMember>();
+        crew2ElectricBugaloo = obj.AddComponent<CrewMember>();
         shield = obj.AddComponent<Shield>();
         shield.SetShip(this);
         StartCoroutine(Load());
@@ -51,8 +53,8 @@ public class Ship : Entity
         for (int i = 0; i < roomManager.Size(); i++)
         {
             roomManager.Get(i).SetParent(this);
-            roomManager.Get(i).SetLocation(roomPositions[i].x * roomManager.Get(i).GetWidth(), 
-                roomPositions[i].y * roomManager.Get(i).GetHeight());
+            roomManager.Get(i).SetLocation(RoomGridToWorld(roomPositions[i]));//roomPositions[i].x * roomManager.Get(i).GetWidth(), 
+                //roomPositions[i].y * roomManager.Get(i).GetHeight());
         }
         for (int i = 0; i < healthBar.Count; i++)
         {
@@ -66,9 +68,12 @@ public class Ship : Entity
         crew.SetParent(this);
         crew.SetShip(this);
         crew.SetPlayerOwned(true);
-        crew.SetLocation(-0.25f, 0);
-        crew.SetRoom(roomManager.Get(3) as Room);
-        //crew.GoToRoom(roomManager.Get(2) as Room);
+        crew2ElectricBugaloo.SetParent(this);
+        crew2ElectricBugaloo.SetShip(this);
+        crew2ElectricBugaloo.SetPlayerOwned(true);
+        yield return new WaitForSeconds(Entity.bufferTime);
+        crew.TeleportToRoom(roomManager.Get(0) as Room);
+        crew2ElectricBugaloo.TeleportToRoom(roomManager.Get(1) as Room);
     }
 
     public RoomManager GetRoomManager()
@@ -107,9 +112,26 @@ public class Ship : Entity
             rooms.Add(e as Room);
         return rooms;
     }
-    
-    public override void OnFocusClick(Entity entity)
+
+    public Vector2 RoomGridToWorld(Vector3 roomPosition)
     {
-        
+        switch(roomPosition.z)
+        {
+            case (0):
+                return new Vector2(roomPosition.x * Room.cellWidth + roomManager.offset.x, 
+                    roomPosition.y * Room.cellWidth + roomManager.offset.y);
+            case (1):
+                return new Vector2((roomPosition.x + 0.5f) * Room.cellWidth + roomManager.offset.x,
+                    roomPosition.y * Room.cellWidth + roomManager.offset.y);
+            case (2):
+                return new Vector2(roomPosition.x * Room.cellWidth + roomManager.offset.x,
+                    (roomPosition.y - 0.5f) * Room.cellWidth + roomManager.offset.y);
+            case (3):
+                return new Vector2((roomPosition.x + 0.5f) * Room.cellWidth + roomManager.offset.x,
+                    (roomPosition.y - 0.5f) * Room.cellWidth + roomManager.offset.y);
+            default:
+                return new Vector2(0, 0);
+        }
     }
+    
 }

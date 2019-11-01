@@ -75,6 +75,8 @@ public class RoomManager : EntityManager
             offset = new Vector2(-xWorld, -yWorld);
             offsetSet = true;
         }
+        xWorld -= offset.x;
+        yWorld -= offset.y;
         if (xWorld < 0)
             xWorld -= (Room.cellWidth - 0.001f);
         else

@@ -7,7 +7,7 @@ public class CrewMember : Entity
     protected Path path;
     protected Ship ship;
     protected Room currentRoom;
-    protected float speed = 1.5f;
+    protected float speed = 0.5f;
     void Start()
     {
         health = 10;
@@ -44,25 +44,18 @@ public class CrewMember : Entity
 
     public void Move()
     {
-            Vector2 direction = new Vector2(-this.localPosition.x + path.CurrentPoint().x, -this.localPosition.y + path.CurrentPoint().y).normalized;
-            Vector2 magnitude = new Vector2(direction.x * speed * Time.deltaTime, direction.y * speed * Time.deltaTime);
-        if (Vector2.Distance(path.CurrentPoint(), localPosition) <= magnitude.magnitude)
-            {
-                
-                SetLocation(path.CurrentPoint().x, path.CurrentPoint().y);
+        Vector2 direction = new Vector2(-this.localPosition.x + path.CurrentPoint().x, -this.localPosition.y + path.CurrentPoint().y).normalized;
+        Vector2 directionWithMagnitude = new Vector2(direction.x * speed * Time.deltaTime, direction.y * speed * Time.deltaTime);
+        if (Vector2.Distance(path.CurrentPoint(), localPosition) <= directionWithMagnitude.magnitude ||
+            Vector2.Distance(path.CurrentPoint(), localPosition) <= 0.01f) //sometimes directionWithMagnitude is 0 and distance is like 1E-9
+        {
+            SetLocation(path.CurrentPoint().x, path.CurrentPoint().y);
             if (path.HasNext())
-            {
-                path.NextPoint();// Debug.Log(path.NextPoint());
-            }
+                path.NextPoint();
             else
-            {
-                //Debug.Log(path);
                 path = null;
-                //Debug.Log("path finished");
-            }
-
-            }
-            SetLocation(localPosition.x + magnitude.x, localPosition.y + magnitude.y);
+        }
+        SetLocation(localPosition.x + directionWithMagnitude.x, localPosition.y + directionWithMagnitude.y);
     }
 
     public void SetShip(Ship ship)
@@ -91,6 +84,14 @@ public class CrewMember : Entity
                     closestCell = cell;
             path = Path.GetPath(ship.GetRoomManager(), closestCell, room.AddCrew(this));
         }
+        currentRoom = room;
+    }
+
+    public void TeleportToRoom(Room room)
+    {
+        if(currentRoom != null)
+            currentRoom.RemoveCrew(this);
+        SetLocation(room.AddCrew(this));
         currentRoom = room;
     }
 }
