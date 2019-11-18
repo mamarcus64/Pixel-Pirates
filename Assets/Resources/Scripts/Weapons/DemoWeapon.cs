@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class DemoWeapon : Weapon
 {
-    void Start()
+    public DemoWeapon Init(Vector2 location, Entity parent)
     {
-        health = 2;
-        width = 1.5f;
-        height = 1;
-        spritePath = "Sprites/Weapons/demo cannon";
-        WeaponStart();
+        Init("Sprites/Weapons/demo cannon", new Vector2(1.5f, 1), location, 2, parent);
         cooldown = 2f;
+        return this;
     }
 
     void Update()
@@ -42,8 +39,9 @@ public class DemoWeapon : Weapon
         ShipFightManager.EndGrayScale();
         if (result == 1)
         {
-            DemoCannonball ball = obj.AddComponent<DemoCannonball>();
-            StartCoroutine(LoadProjectile(ball, clickedEntity));
+            obj.AddComponent<DemoCannonball>().Init(new Vector2(obj.transform.position.x, obj.transform.position.y), clickedEntity,
+                obj.transform.parent.GetComponent<EntityProxy>().GetEntity() as Ship);
+            //using absolute position, not localPosition for projectile location b/c ball is not tied to a parent ship
         }
     }
 }

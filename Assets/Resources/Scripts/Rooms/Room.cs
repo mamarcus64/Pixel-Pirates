@@ -11,16 +11,15 @@ public abstract class Room : Entity
     CrewMember[] crew = new CrewMember[4];
     public static float cellWidth = 0.5f;
     public static float cellHeight = 0.5f;
-    public void RoomStart()
+    public Room Init(string spritePath, Vector2 location, Entity parent)
     {
+        base.Init(spritePath, new Vector2(cellWidth * (1 + Convert.ToInt32(this.GetType().Name == "LongRoom" || this.GetType().Name == "BigRoom")),
+            cellHeight * (1 + Convert.ToInt32(this.GetType().Name == "TallRoom" || this.GetType().Name == "BigRoom"))), location, "Rooms", 2, parent);
         cells = new List<Vector2>();
-        width = cellWidth * (1 + Convert.ToInt32(this.GetType().Name == "LongRoom" || this.GetType().Name == "BigRoom"));
-        height = cellHeight * (1 + Convert.ToInt32(this.GetType().Name == "TallRoom" || this.GetType().Name == "BigRoom"));
-        layer = "Rooms";
         wantsFocus = true;
         roomIcon = new GameObject();
         roomIcon.AddComponent<SpriteRenderer>();
-        EntityStart();
+        return this;
     }
 
     public void SetSpots()

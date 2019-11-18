@@ -2,44 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ship : Entity
+public abstract class Ship : Entity
 {
     protected WeaponManager weaponManager;
-    protected List<Vector2> weaponPositions = new List<Vector2>();
     protected RoomManager roomManager;
-    protected List<Vector3> roomPositions = new List<Vector3>();
     protected List<GameObject> healthBar = new List<GameObject>();
     protected Shield shield;
-    CrewMember crew;
-    CrewMember crew2ElectricBugaloo;
-    public void ShipStart()
-    {
+    BasicCrew crew;
+    BasicCrew crew2ElectricBugaloo;
+
+    public Ship Init(string spritepath, Vector2 size, Vector2 location, int health)
+    {  
+        base.Init(spritepath, size, location, "Ships", health);
+        List<Vector3> roomPositions = RoomLayout();
         weaponManager = new WeaponManager(this);
         roomManager = new RoomManager(this);
-        layer = "Ships";
-        EntityStart();
         wantsFocus = false;
         foreach (Vector3 room in roomPositions)
         {
-            if(room.z == 0)
-                roomManager.Add(obj.AddComponent<SingleRoom>());
+            if (room.z == 0)
+                roomManager.Add(obj.AddComponent<SingleRoom>().Init(RoomGridToWorld(room), this));
             else if (room.z == 1)
-                roomManager.Add(obj.AddComponent<LongRoom>());
+                roomManager.Add(obj.AddComponent<LongRoom>().Init(RoomGridToWorld(room), this));
             else if (room.z == 2)
-                roomManager.Add(obj.AddComponent<TallRoom>());
+                roomManager.Add(obj.AddComponent<TallRoom>().Init(RoomGridToWorld(room), this));
             else if (room.z == 3)
-                roomManager.Add(obj.AddComponent<BigRoom>());
+                roomManager.Add(obj.AddComponent<BigRoom>().Init(RoomGridToWorld(room), this));
 
         }
-        for (int i = 0; i < health; i++) {
+        for (int i = 0; i < health; i++)
+        {
             healthBar.Add(new GameObject("Health"));
             healthBar[i].AddComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Misc/green bar");
         }
-        crew = obj.AddComponent<CrewMember>();
-        crew2ElectricBugaloo = obj.AddComponent<CrewMember>();
-        shield = obj.AddComponent<Shield>();
-        shield.SetShip(this);
+        crew = obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(0));
+        crew2ElectricBugaloo = obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(1));
+        shield = obj.AddComponent<Shield>().Init(this);
         StartCoroutine(Load());
+        return this;
     }
 
     IEnumerator Load()
@@ -47,15 +47,10 @@ public class Ship : Entity
         yield return new WaitForSeconds(Entity.bufferTime);
         weaponManager.Get(0).SetParent(this);
         weaponManager.Get(1).SetParent(this);
-        weaponManager.Place(weaponPositions[0], 0);
-        weaponManager.Place(weaponPositions[1], 1);
+        weaponManager.Place(WeaponLayout()[0], 0);
+        weaponManager.Place(WeaponLayout()[1], 1);
        
-        for (int i = 0; i < roomManager.Size(); i++)
-        {
-            roomManager.Get(i).SetParent(this);
-            roomManager.Get(i).SetLocation(RoomGridToWorld(roomPositions[i]));//roomPositions[i].x * roomManager.Get(i).GetWidth(), 
-                //roomPositions[i].y * roomManager.Get(i).GetHeight());
-        }
+       
         for (int i = 0; i < healthBar.Count; i++)
         {
             healthBar[i].transform.parent = obj.transform;
@@ -64,17 +59,10 @@ public class Ship : Entity
         }
         (roomManager.Get(0) as Room).AttachWeapon(weaponManager.Get(0) as Weapon);
         (roomManager.Get(1) as Room).AttachWeapon(weaponManager.Get(1) as Weapon);
-        
-        crew.SetParent(this);
-        crew.SetShip(this);
-        crew.SetPlayerOwned(true);
-        crew2ElectricBugaloo.SetParent(this);
-        crew2ElectricBugaloo.SetShip(this);
-        crew2ElectricBugaloo.SetPlayerOwned(true);
-        yield return new WaitForSeconds(Entity.bufferTime);
-        crew.TeleportToRoom(roomManager.Get(0) as Room);
-        crew2ElectricBugaloo.TeleportToRoom(roomManager.Get(1) as Room);
     }
+
+    public abstract List<Vector3> RoomLayout();
+    public abstract List<Vector2> WeaponLayout();
 
     public RoomManager GetRoomManager()
     {

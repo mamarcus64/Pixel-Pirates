@@ -10,8 +10,10 @@ public class ShipFightManager : MonoBehaviour
     void Start()
     {
         paused = false;
-        playerShip = gameObject.AddComponent<BasicShip>();
-        enemyShip = gameObject.AddComponent<BasicShip>();
+        playerShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, 2));
+
+        enemyShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, -2.5f));
+        //playerShip.SetPlayerOwned(true);
         StartCoroutine(Load());
     }
 
@@ -25,9 +27,9 @@ public class ShipFightManager : MonoBehaviour
     IEnumerator Load()
     {
         yield return new WaitForSeconds(Entity.bufferTime);
-        playerShip.SetLocation(0, 2);
+        //playerShip.SetLocation(0, 2);
         playerShip.SetPlayerOwned(true);
-        enemyShip.SetLocation(0, -2.5f);
+        //enemyShip.SetLocation(0, -2.5f);
     }
 
     void Update()

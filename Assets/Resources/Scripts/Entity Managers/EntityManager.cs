@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EntityManager
+public abstract class EntityManager<E>
 {
     protected Entity owner;
     protected int maxSize;
-    protected List<Entity> entities = new List<Entity>();
+    protected List<E> entities = new List<E>();
     public EntityManager(Entity owner)
     {
         this.owner = owner;
@@ -19,24 +19,24 @@ public abstract class EntityManager
         this.maxSize = maxSize;
     }
 
-    public Entity Get(int i)
+    public E Get(int i)
     {
         return entities[i];
     }
 
-    public List<Entity> GetAll()
+    public List<E> GetAll()
     {
         return entities;
     }
 
-    public Entity Set(int i, Entity entity)
+    public E Set(int i, E entity)
     {
-        Entity oldEntity = entities[i];
+        E oldEntity = entities[i];
         entities[i] = entity;
         return oldEntity;
     }
 
-    public bool Add(Entity entity)
+    public bool Add(E entity)
     {
         if (entities.Count >= maxSize)
             return false;
@@ -44,25 +44,25 @@ public abstract class EntityManager
         return true;
     }
 
-    public Entity Remove(int i)
+    public E Remove(int i)
     {
-        Entity oldEntity = entities[i];
+        E oldEntity = entities[i];
         entities.RemoveAt(i);
         return oldEntity;
     }
 
     public void Place(Vector2 location, int i)
     {
-        entities[i].SetParent(owner);
-        entities[i].SetLocation(location);
+        (entities[i] as Entity).SetParent(owner);
+        (entities[i] as Entity).SetLocation(location);
     }
 
     public void Place(List<Vector2> locations)
     {
         for(int i = 0; i < locations.Count && i < entities.Count; i++)
         {
-            entities[i].SetParent(owner);
-            entities[i].SetLocation(locations[i]);
+            (entities[i] as Entity).SetParent(owner);
+            (entities[i] as Entity).SetLocation(locations[i]);
         }
     }
 

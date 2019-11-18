@@ -1,37 +1,26 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Weapon : Entity
 {
     protected float cooldown;
     protected float cooldownTimer = 0;
-    protected GameObject greenBar;
-    protected GameObject redBar;
+    protected Icon greenBar;
+    protected Icon redBar;
     protected Entity clickedEntity;
-
     public static float cooldownWidth = 0.625f;
-    public static float cooldownHeight = 0.25f;
+    public static float cooldownHeight = 0.5f;
 
-    public void WeaponStart()
+    public Weapon Init(string spritePath, Vector2 size, Vector2 location, int health, Entity parent)
     {
-        layer = "Weapons";
-        EntityStart();
+        base.Init(spritePath, size, location, "Weapons", health, parent);
         wantsFocus = true;
-        greenBar = new GameObject();
-        redBar = new GameObject();
-        greenBar.AddComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Misc/green bar");
-        redBar.AddComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Misc/red bar");
-        greenBar.transform.parent = obj.transform;
-        redBar.transform.parent = obj.transform;
-        greenBar.transform.localPosition = new Vector3(greenBar.transform.localPosition.x, greenBar.transform.localPosition.y, 
-            Entity.GetZPosition("Green Bar"));
-        redBar.transform.localPosition = new Vector3(redBar.transform.localPosition.x, redBar.transform.localPosition.y,
-           Entity.GetZPosition("Red Bar"));
-        Resize(0.1f, cooldownHeight, greenBar);
-        Resize(cooldownWidth, cooldownHeight, redBar);
-        redBar.transform.position = new Vector3(localPosition.x, localPosition.y + 0.5f, redBar.transform.localPosition.z);
-        greenBar.transform.position = new Vector3(redBar.transform.position.x, redBar.transform.position.y, greenBar.transform.localPosition.z);    
+        greenBar = obj.AddComponent<Icon>();
+        greenBar.Init(this, "Sprites/Misc/green bar", new Vector2(1f, cooldownHeight), new Vector2(), Entity.GetZPosition("Green Bar"));
+        redBar = obj.AddComponent<Icon>();
+        redBar.Init(this, "Sprites/Misc/red bar", new Vector2(cooldownWidth, cooldownHeight), new Vector2(0, 1.5f), Entity.GetZPosition("Red Bar"));
+        greenBar.SetLocation(redBar.localPosition.x, redBar.localPosition.y);
+        return this;
     }
 
     public void WeaponUpdate()
@@ -48,18 +37,14 @@ public abstract class Weapon : Entity
     
     public void DrawCooldownBar()
     {
-        Resize(cooldownWidth * (cooldownTimer / cooldown), cooldownHeight, greenBar);
-        greenBar.transform.position = new Vector3(redBar.transform.position.x - cooldownWidth / 2
-         +  (cooldownWidth * (cooldownTimer / cooldown)/2), redBar.transform.position.y, greenBar.transform.position.z);
-    }
-
-    public IEnumerator LoadProjectile(Projectile projectile, Entity target)
-    {
-        yield return new WaitForSeconds(Entity.bufferTime);
-        
-        projectile.SetLocation(obj.transform.position.x, obj.transform.position.y); //not localPosition b/c not in relation to weapon
-        projectile.SetTarget(target);
-        projectile.SetShooter(obj.transform.parent.GetComponent<EntityProxy>().GetEntity() as Ship);
+        //redBar.SetLocation(redBar.localPosition.x, redBar.localPosition.y);
+        //Debug.Log(greenBar.localPosition);
+        //greenBar.Resize(cooldownWidth * (cooldownTimer / cooldown), cooldownHeight);
+        greenBar.SetLocation(redBar.transform.localPosition.x - cooldownWidth / 2
+         + (cooldownWidth * (cooldownTimer / cooldown) / 2), redBar.localPosition.y);
+        greenBar.SetLocation(-100, -100);
+        //redBar.SetLocation
+        //greenBar.transform.position = new Vector3( greenBar.transform.position.z);
     }
 
     public override void TakeDamage(int damage)

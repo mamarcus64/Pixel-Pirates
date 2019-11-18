@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomManager : EntityManager
+public class RoomManager : EntityManager<Room>
 {
     public static int gridWidth = 40;
     public static int gridHeight = 20;

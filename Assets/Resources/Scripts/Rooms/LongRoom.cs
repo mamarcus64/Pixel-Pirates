@@ -10,10 +10,10 @@ public class LongRoom : Room
     }
 
     // Start is called before the first frame update
-    void Start()
+    public LongRoom Init(Vector2 location, Entity parent)
     {
-        spritePath = "Sprites/Misc/demo room";
-        RoomStart();
+        base.Init("Sprites/Misc/demo room", location, parent);
+        return this;
     }
 
     // Update is called once per frame

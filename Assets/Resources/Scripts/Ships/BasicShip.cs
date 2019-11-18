@@ -4,43 +4,42 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BasicShip : Ship {
-	void Start() {
-		health = 6;
-		spritePath = "Sprites/Ships/basic ship";
-		width = 1280 / 100;
-		height = 432 / 100;
-        /*
-         the way roomPositions currently works: the first two values are the x and y position relative to the center of the ship
-        the third value is essentially an enum that corresponds to the type of room; 0 = 1x1 (single) room, 1 = 2x1 (long) room, 
-        2 = 1x2 (tall) room and 3 = 2x2 (big) room; to be honest, because rooms are not going to change from copies of the same ship,
-        the room positions can just be manually entered in code every time for however many types of ships we will design
 
-        With that being said, the way rooms are generated are with and x and y corresponding to the relative location of the topleft most cell in the room
-        i.e. (0, 0, 2) would be a tall room with the top cell of the room (since there is no topleft cell) located at (0, 0) relative to the rest of the cells
-        and (1, 0, 2) would be a tall room directly to the right of it, since the x value is one greater
-        add an offset after ShipStart to move EVERY room in that direction
-        */
-        
-        roomPositions.Add(new Vector3(-1, 0, 1));
-        roomPositions.Add(new Vector3(-1, 1, 1));
-        roomPositions.Add(new Vector3(-1, 3, 2));
-        roomPositions.Add(new Vector3(0, 3, 2));
-        //roomPositions.Add(new Vector3(-1, 0, 1));
-        ShipStart();
+    public BasicShip Init(Vector2 location)
+    {
+        base.Init("Sprites/Ships/basic ship", new Vector2(12.8f, 4.32f), location, 6);
         roomManager.SetOffset(new Vector2(0, -0.5f));
+        List<Vector2> weaponPos = WeaponLayout();
+        weaponManager.Add(obj.AddComponent<DemoWeapon>().Init(weaponPos[0], this));
+        weaponManager.Add(obj.AddComponent<DemoWeapon>().Init(weaponPos[1], this));
+        return this;
+    }
 
-        weaponManager.Add(obj.AddComponent<DemoWeapon>());
-		weaponManager.Add(obj.AddComponent<DemoWeapon>());
+    void Update()
+    {
+        if (!ShipFightManager.paused)
+        {
+            ShipUpdate();
+        }
+    }
 
-		weaponPositions.Add(new Vector2(-1, 1.25f));
-		weaponPositions.Add(new Vector2(-1, -1.25f));
-		weaponPositions.Add(new Vector2(3.5f, 2.5f));
-		weaponPositions.Add(new Vector2(3.5f, -3));
-	}
 
-	void Update() {
-		if (!ShipFightManager.paused) {
-			ShipUpdate();
-		}
-	}
+    override public List<Vector2> WeaponLayout()
+    {
+        List<Vector2> weaponPositions = new List<Vector2>();
+        weaponPositions.Add(new Vector2(-1, 1.25f));
+        weaponPositions.Add(new Vector2(-1, -1.25f));
+        weaponPositions.Add(new Vector2(3.5f, 2.5f));
+        weaponPositions.Add(new Vector2(3.5f, -3));
+        return weaponPositions;
+    }
+    override public List<Vector3> RoomLayout()
+    {
+        List<Vector3> roomPositions = new List<Vector3>();
+        roomPositions.Add(new Vector3(-1, -1, 1));
+        roomPositions.Add(new Vector3(-1, 0, 1));
+        roomPositions.Add(new Vector3(-1, 2, 2));
+        roomPositions.Add(new Vector3(0, 2, 2));
+        return roomPositions;
+    }
 }

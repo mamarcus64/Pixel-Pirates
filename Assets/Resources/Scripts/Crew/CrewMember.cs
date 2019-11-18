@@ -2,35 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CrewMember : Entity
+public abstract class CrewMember : Entity
 {
     protected Path path;
     protected Ship ship;
     protected Room currentRoom;
     protected float speed = 0.5f;
-    void Start()
+    public CrewMember Init(string spritePath, Ship ship, Room room)
     {
-        health = 10;
-        layer = "Crew";
-        spritePath = "Sprites/Crew/demo crew";
-        width = 0.5f;
-        height = 0.5f;
+        Vector2 roomPos = room.AddCrew(this);
+        base.Init(spritePath, new Vector2(0.5f, 0.5f), room.AddCrew(this), "Crew", 10, ship);
+        currentRoom = room;
         wantsFocus = true;
         path = null;
-        EntityStart();
+        SetShip(ship);
+        return this;
     }
-    int x = 0;
-    void Update()
-    {
 
-        if (!ShipFightManager.paused)
-        {
+    public void CrewUpdate()
+    {
             EntityUpdate();
             if (path != null && path.HasCurrent())
             {
                 Move();
-            }
-        }
+            }      
     }
 
     public override void OnFocusClick(Entity entity)
@@ -61,6 +56,7 @@ public class CrewMember : Entity
     public void SetShip(Ship ship)
     {
         this.ship = ship;
+        SetParent(ship);
     }
 
     public void SetRoom(Room room)

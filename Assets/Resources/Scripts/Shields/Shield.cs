@@ -4,24 +4,26 @@ using UnityEngine;
 
 public class Shield : Entity
 {
-    protected Ship mShip;
+    protected Ship ship;
     protected int rechargeTime = 3;
     protected float recharge = 0;
 
     public void SetShip(Ship newShip)
     {
-        mShip = newShip;
+        ship = newShip;
+        SetParent(ship);
     }
 
-    void Start()
+    public Shield Init(Ship ship)
     {
-        width = 15;
-        height = 5;
-        health = 1;
-        layer = "Shields";
-        spritePath = "Sprites/Shields/demo shield";
-        EntityStart();
-        StartCoroutine(Load());
+        base.Init("Sprites/Shields/demo shield", new Vector2(15, 5), new Vector2(0, 0), "Shields");
+        SetShip(ship);
+        if (obj != null)
+            localPosition = obj.transform.localPosition;
+        SetLocation(0, 0, -GetZPosition("Ships") + GetZPosition("Shields"));//need to assign again bc now it has the ship as a parent
+        //need to do the funky z-position stuff bc shield technically hasn't loaded in yet w/ correct z-value
+        Resize(ship.GetWidth() + 4, ship.GetHeight() + 3.5f);
+        return this;
     }
 
     void Update()
@@ -44,22 +46,6 @@ public class Shield : Entity
         }
     }
 
-    public IEnumerator Load()
-    {
-
-        yield return new WaitForSeconds(Entity.bufferTime);
-        this.SetParent(mShip);
-        if (obj != null)
-            localPosition = obj.transform.localPosition;
-        SetLocation(0, 0);
-        Resize(mShip.GetWidth() + 4, mShip.GetHeight() + 3.5f);
-        //Destroy(obj.GetComponent<PolygonCollider2D>());
-       // mCollider = null;
-        //ellipseCollider = obj.AddComponent<EllipseCollider2D>();
-        //ellipseCollider.radiusX = (mShip.getWidth() + 4) / 1;
-        //ellipseCollider.radiusY = (mShip.GetHeight()) / 1;
-    }
-
     public override void GrayScale()
     {
         
@@ -78,17 +64,17 @@ public class Shield : Entity
     public void OnTriggerEnter2D(Collider2D collision)
     {
         Entity collided = collision.gameObject.GetComponent<EntityProxy>().GetEntity();
-        if(mRenderer.enabled && collided is Projectile projectile && projectile.GetShooter() != this.mShip)
-            if(projectile.GetShooter() != this.getShip())
+        if(mRenderer.enabled && collided is Projectile projectile && projectile.GetShooter() != this.ship)
+            if(projectile.GetShooter() != this.GetShip())
             {
                 projectile.Die();
                 health--;
             }
     }
 
-    public Ship getShip()
+    public Ship GetShip()
     {
-        return mShip;
+        return ship;
     }
 
     

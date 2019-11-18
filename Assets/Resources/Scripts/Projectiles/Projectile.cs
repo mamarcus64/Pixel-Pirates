@@ -9,12 +9,13 @@ public abstract class Projectile : Entity
     protected float speed;
     protected float epsilon = 0.1f;
     protected Vector2 direction;
-   public void ProjectileStart()
+   public Projectile Init(string spritePath, Vector2 size, Vector2 location, Entity target, Ship shooter)
     {
-        EntityStart();
-        wantsFocus = false;
-        obj.GetComponent<SpriteRenderer>().sortingLayerName = "Projectiles";
+        base.Init(spritePath, size, location, "Projectiles");
         direction = new Vector2(1, 0);
+        SetTarget(target);
+        SetShooter(shooter);
+        return this;
     }
 
     public void ProjectileUpdate()

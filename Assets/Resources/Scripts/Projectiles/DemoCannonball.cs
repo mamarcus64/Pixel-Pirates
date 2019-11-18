@@ -14,13 +14,11 @@ public class DemoCannonball : Projectile
         
     }
 
-    void Start()
+    public DemoCannonball Init(Vector2 location, Entity target, Ship shooter)
     {
-        spritePath = "Sprites/Projectiles/demo cannonball";
-        width = 1f;
-        height = 1f;
+        base.Init("Sprites/Projectiles/demo cannonball", new Vector2(1, 1), location, target, shooter);
         speed = 8f;
-        ProjectileStart();
+        return this;
     }
 
     void Update()
