@@ -7,16 +7,15 @@ public abstract class Entity : MonoBehaviour
     protected GameObject obj;
     protected SpriteRenderer mRenderer;
     protected Collider2D mCollider;
-    protected string spritePath;
-    protected string layer;
     protected SpriteOutline outline;
+    protected Entity parent;
     protected float width;
     protected float height;
     protected int health;
     protected Vector3 localPosition;
     protected bool playerOwned = false;
     public bool wantsFocus = false;
-    public static int GetZPosition(string name)
+    public static float GetZPosition(string name)
     {
         switch(name)
         {
@@ -29,6 +28,9 @@ public abstract class Entity : MonoBehaviour
             case "Green Bar": return -6;
             case "Projectiles": return -7;
             case "Aim Games": return -8;
+            case "Aim Games.1": return -8.1f;
+            case "Aim Games.2": return -8.2f;
+            case "Aim Games.3": return -8.3f;
             default: Debug.Log("ERROR: object layer not found: " + name); return 1;
         }
     }
@@ -48,13 +50,20 @@ public abstract class Entity : MonoBehaviour
         if (DebugToggler.entityCreated)
             Debug.Log("New " + this.GetType().Name + " created");
         mRenderer = obj.AddComponent<SpriteRenderer>();
-        //EnableRenderer();
         mRenderer.sprite = Resources.Load<Sprite>(spritepath);
         width = size.x;
         height = size.y;
-        if(parent != null)
-            SetParent(parent);
         Resize(width, height);
+        if (parent != null)
+        {
+            SetParent(parent);
+            SetLocation(location.x, location.y, GetZPosition(layer) - parent.GetAbsolutePosition().z);
+            //subtract parent's  absolute z-position to achieve correct z-position at GetZPosition(layer)
+        }
+        else
+        {
+            SetLocation(location.x, location.y, GetZPosition(layer));
+        }
         this.health = health;
         mCollider = obj.AddComponent<PolygonCollider2D>();
         mCollider.isTrigger = true; //is unnecessary??
@@ -67,9 +76,7 @@ public abstract class Entity : MonoBehaviour
         outline.enabled = false;
         mRenderer.enabled = false;
         obj.AddComponent<Rigidbody2D>().gravityScale = 0;
-        SetLocation(location.x, location.y, GetZPosition(layer));
         localPosition = obj.transform.localPosition;
-        //EnableRenderer();
         StartCoroutine(EnableRenderer());
         return this;
     }
@@ -79,26 +86,12 @@ public abstract class Entity : MonoBehaviour
         yield return new WaitForSeconds(Entity.bufferTime);
         mRenderer.enabled = true;
     }
-    IEnumerator SetZ()
-    {
-        yield return new WaitForSeconds(Entity.bufferTime);
-        obj.transform.position = new Vector3(obj.transform.position.x, obj.transform.position.y, GetZPosition(layer));
-    }
-
-    IEnumerator SetZ(float z)
-    {
-        yield return new WaitForSeconds(Entity.bufferTime);
-        obj.transform.position = new Vector3(obj.transform.position.x, obj.transform.position.y, z);
-    }
 
     public void EntityUpdate()
     {
-        if (obj != null) {
-
-            localPosition = obj.transform.localPosition;
-            Vector3 parentScale = this.GetParentScale();
-            localPosition = new Vector3(localPosition.x * parentScale.x, localPosition.y * parentScale.y, localPosition.z * parentScale.z);
-        }
+        localPosition = obj.transform.localPosition;
+        if (localPosition != obj.transform.localPosition || this.GetAbsolutePosition() != obj.transform.position)
+            Debug.Log("ERROR ERROR ERROR");
     }
 
     public void Resize(float x, float y)
@@ -117,6 +110,16 @@ public abstract class Entity : MonoBehaviour
         float yScale = y / obje.GetComponent<SpriteRenderer>().sprite.bounds.size.y
             / parentScale.y;
         obje.transform.localScale = new Vector3(xScale, yScale, 1 / parentScale.z);
+    }
+
+    public void SetOpacity(float a)
+    {
+        mRenderer.color = new Color(1, 1, 1, a);
+    }
+
+    public void Move(Vector2 direction)
+    {
+        SetLocation(new Vector2(localPosition.x + direction.x, localPosition.y + direction.y));
     }
 
     public static Vector3 GetParentScale(GameObject obj)
@@ -155,14 +158,12 @@ public abstract class Entity : MonoBehaviour
 
     public void SetLocation(float x, float y, float z, GameObject obj)
     {
-        Vector3 parentScale = GetParentScale(obj);
-        obj.transform.localPosition = new Vector3(x / parentScale.x, y / parentScale.y, z / parentScale.z);
+        obj.transform.localPosition = new Vector3(x, y, z);// / parentScale.x, y / parentScale.y, z / parentScale.z);
     }
 
     public void SetLocation(float x, float y, float z)
     {
-        Vector3 parentScale = GetParentScale();
-        obj.transform.localPosition = new Vector3(x / parentScale.x, y / parentScale.y, z / parentScale.z);
+        obj.transform.localPosition = new Vector3(x, y, z);
     }
 
     public void SetLocation(Vector2 position)
@@ -175,9 +176,20 @@ public abstract class Entity : MonoBehaviour
         return obj.transform.position;
     }
 
+    public Vector3 GetLocalPosition()
+    {
+        return localPosition;
+    }
+
     public void SetParent(Entity entity)
     {
         this.obj.transform.parent = entity.GetObject().transform;
+        this.parent = entity;
+    }
+
+    public Entity GetParent()
+    {
+        return parent;
     }
 
     public void SetOutline(bool set)

@@ -10,7 +10,6 @@ public abstract class CrewMember : Entity
     protected float speed = 0.5f;
     public CrewMember Init(string spritePath, Ship ship, Room room)
     {
-        Vector2 roomPos = room.AddCrew(this);
         base.Init(spritePath, new Vector2(0.5f, 0.5f), room.AddCrew(this), "Crew", 10, ship);
         currentRoom = room;
         wantsFocus = true;

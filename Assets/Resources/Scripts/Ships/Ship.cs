@@ -6,7 +6,7 @@ public abstract class Ship : Entity
 {
     protected WeaponManager weaponManager;
     protected RoomManager roomManager;
-    protected List<GameObject> healthBar = new List<GameObject>();
+    protected List<Icon> healthBar = new List<Icon>();
     protected Shield shield;
     BasicCrew crew;
     BasicCrew crew2ElectricBugaloo;
@@ -32,8 +32,7 @@ public abstract class Ship : Entity
         }
         for (int i = 0; i < health; i++)
         {
-            healthBar.Add(new GameObject("Health"));
-            healthBar[i].AddComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Misc/green bar");
+            healthBar.Add(obj.AddComponent<Icon>().Init("Sprites/Misc/green bar", new Vector2(0.25f, 0.25f), new Vector2(-width / 3 + 0.3f * i, height / 3),  "Green Bar", this));
         }
         crew = obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(0));
         crew2ElectricBugaloo = obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(1));
@@ -49,14 +48,6 @@ public abstract class Ship : Entity
         weaponManager.Get(1).SetParent(this);
         weaponManager.Place(WeaponLayout()[0], 0);
         weaponManager.Place(WeaponLayout()[1], 1);
-       
-       
-        for (int i = 0; i < healthBar.Count; i++)
-        {
-            healthBar[i].transform.parent = obj.transform;
-            Resize(0.25f, 0.25f, healthBar[i]);
-            SetLocation(-width / 3 + 0.3f * i, height / 3, GetZPosition("Green Bar"), healthBar[i]);
-        }
         (roomManager.Get(0) as Room).AttachWeapon(weaponManager.Get(0) as Weapon);
         (roomManager.Get(1) as Room).AttachWeapon(weaponManager.Get(1) as Weapon);
     }
@@ -78,12 +69,12 @@ public abstract class Ship : Entity
             Destroy(healthBar[healthBar.Count - 1]);
             healthBar.RemoveAt(healthBar.Count - 1);
                 }
-        for (int i = 0; i < healthBar.Count; i++)
+        /*for (int i = 0; i < healthBar.Count; i++)
         {
             healthBar[i].transform.parent = obj.transform;
             Resize(0.25f, 0.25f, healthBar[i]);
             SetLocation(-width / 3 + 0.3f * i, height / 3, GetZPosition("Green Bar"), healthBar[i]);
-        }
+        }*/
         if (health == 0)
             Destroy(obj);
     }

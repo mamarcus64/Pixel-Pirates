@@ -7,7 +7,7 @@ public class DemoWeapon : Weapon
     public DemoWeapon Init(Vector2 location, Entity parent)
     {
         Init("Sprites/Weapons/demo cannon", new Vector2(1.5f, 1), location, 2, parent);
-        cooldown = 2f;
+        cooldown = 4f;
         return this;
     }
 
@@ -27,7 +27,6 @@ public class DemoWeapon : Weapon
             if (cooldownTimer >= cooldown)
                 cooldownTimer = 0;
             ShipFightManager.paused = true;
-            ShipFightManager.GrayScale();
             obj.AddComponent<SideSweep>().SetWeapon(this);
 
         } 
@@ -36,7 +35,6 @@ public class DemoWeapon : Weapon
     public override void AimGameResults(float result)
     {
         ShipFightManager.paused = false;
-        ShipFightManager.EndGrayScale();
         if (result == 1)
         {
             obj.AddComponent<DemoCannonball>().Init(new Vector2(obj.transform.position.x, obj.transform.position.y), clickedEntity,

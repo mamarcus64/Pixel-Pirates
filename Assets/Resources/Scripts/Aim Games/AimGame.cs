@@ -4,8 +4,9 @@ using UnityEngine;
 
 public abstract class AimGame : MonoBehaviour
 {
-    protected GameObject parent;
+    protected Icon grayScreen;
     protected Weapon weapon;
+    protected Vector2 weaponPosition;
 
     public void SetWeapon(Weapon input)
     {
@@ -14,15 +15,20 @@ public abstract class AimGame : MonoBehaviour
 
     public void AimGameStart()
     {
-        parent = new GameObject("Aim Game");
-        Vector3 weaponPosition = weapon.GetAbsolutePosition();
-        parent.transform.position = new Vector3(weaponPosition.x, weaponPosition.y, Entity.GetZPosition("Aim Games"));
+        weaponPosition = weapon.GetAbsolutePosition();
+        grayScreen = weapon.GetObject().AddComponent<Icon>().Init("Sprites/Misc/gray bar", Camera.main.ScreenToWorldPoint
+            (new Vector2(Screen.width, Screen.height)),
+            new Vector2(-weaponPosition.x, -weaponPosition.y), "Aim Games", weapon);
+        Debug.Log("Weapon pos: " + weaponPosition);
+        grayScreen.SetOpacity(0.5f);
+        
+        //grayScreen.transform.position = new Vector3(weaponPosition.x, weaponPosition.y, Entity.GetZPosition("Aim Games"));
     }
 
     public void Finish(float result)
     {
         weapon.AimGameResults(result);
-        Destroy(parent);
+        grayScreen.Die();
         Destroy(this);
     }
 

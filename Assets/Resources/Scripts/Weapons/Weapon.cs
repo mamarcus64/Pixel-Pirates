@@ -15,11 +15,11 @@ public abstract class Weapon : Entity
     {
         base.Init(spritePath, size, location, "Weapons", health, parent);
         wantsFocus = true;
-        greenBar = obj.AddComponent<Icon>();
-        greenBar.Init(this, "Sprites/Misc/green bar", new Vector2(1f, cooldownHeight), new Vector2(), Entity.GetZPosition("Green Bar"));
-        redBar = obj.AddComponent<Icon>();
-        redBar.Init(this, "Sprites/Misc/red bar", new Vector2(cooldownWidth, cooldownHeight), new Vector2(0, 1.5f), Entity.GetZPosition("Red Bar"));
-        greenBar.SetLocation(redBar.localPosition.x, redBar.localPosition.y);
+        Vector2 barLoc = new Vector2(0, 1); //relative to parent, which in for green/red bar's case is Weapon
+        greenBar = obj.AddComponent<Icon>().Init("Sprites/Misc/green bar", 
+            new Vector2(1f, cooldownHeight), barLoc, "Green Bar", this);
+        redBar = obj.AddComponent<Icon>().Init("Sprites/Misc/red bar", 
+            new Vector2(cooldownWidth, cooldownHeight), barLoc, "Red Bar", this);
         return this;
     }
 
@@ -37,12 +37,9 @@ public abstract class Weapon : Entity
     
     public void DrawCooldownBar()
     {
-        //redBar.SetLocation(redBar.localPosition.x, redBar.localPosition.y);
-        //Debug.Log(greenBar.localPosition);
-        //greenBar.Resize(cooldownWidth * (cooldownTimer / cooldown), cooldownHeight);
-        greenBar.SetLocation(redBar.transform.localPosition.x - cooldownWidth / 2
-         + (cooldownWidth * (cooldownTimer / cooldown) / 2), redBar.localPosition.y);
-        greenBar.SetLocation(-100, -100);
+        greenBar.Resize(cooldownWidth * (cooldownTimer / cooldown), cooldownHeight);
+        greenBar.SetLocation(redBar.GetLocalPosition().x - cooldownWidth / 2
+         + (cooldownWidth * (cooldownTimer / cooldown) / 2), redBar.GetLocalPosition().y);
         //redBar.SetLocation
         //greenBar.transform.position = new Vector3( greenBar.transform.position.z);
     }
