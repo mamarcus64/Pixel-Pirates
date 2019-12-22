@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class Room : Entity
 {
-    GameObject roomIcon;
+    Icon roomIcon;
     Entity system;
     List<Vector2> cells;
     CrewMember[] crew = new CrewMember[4];
@@ -17,8 +17,7 @@ public abstract class Room : Entity
             cellHeight * (1 + Convert.ToInt32(this.GetType().Name == "TallRoom" || this.GetType().Name == "BigRoom"))), location, "Rooms", 2, parent);
         cells = new List<Vector2>();
         wantsFocus = true;
-        roomIcon = new GameObject();
-        roomIcon.AddComponent<SpriteRenderer>();
+        roomIcon = obj.AddComponent<Icon>().Init("", new Vector2(cellWidth, cellHeight), new Vector2(0, 0), "Rooms.1", this, false);
         return this;
     }
 
@@ -27,21 +26,21 @@ public abstract class Room : Entity
         switch(this.GetType().Name)
         {
             case "SingleRoom":
-                cells.Add(new Vector2(localPosition.x, localPosition.y));
+                cells.Add(new Vector2(relativePosition.x, relativePosition.y));
                 break;
             case "LongRoom":
-                cells.Add(new Vector2(localPosition.x - cellWidth / 2, localPosition.y));
-                cells.Add(new Vector2(localPosition.x + cellWidth / 2, localPosition.y));
+                cells.Add(new Vector2(relativePosition.x - cellWidth / 2, relativePosition.y));
+                cells.Add(new Vector2(relativePosition.x + cellWidth / 2, relativePosition.y));
                 break;
             case "TallRoom":
-                cells.Add(new Vector2(localPosition.x, localPosition.y + cellHeight / 2));
-                cells.Add(new Vector2(localPosition.x, localPosition.y - cellHeight / 2));
+                cells.Add(new Vector2(relativePosition.x, relativePosition.y + cellHeight / 2));
+                cells.Add(new Vector2(relativePosition.x, relativePosition.y - cellHeight / 2));
                 break;
             case "BigRoom":
-                cells.Add(new Vector2(localPosition.x + cellWidth / 2, localPosition.y + cellHeight / 2));
-                cells.Add(new Vector2(localPosition.x + cellWidth / 2, localPosition.y - cellHeight / 2));
-                cells.Add(new Vector2(localPosition.x - cellWidth / 2, localPosition.y + cellHeight / 2));
-                cells.Add(new Vector2(localPosition.x - cellWidth / 2, localPosition.y - cellHeight / 2));
+                cells.Add(new Vector2(relativePosition.x + cellWidth / 2, relativePosition.y + cellHeight / 2));
+                cells.Add(new Vector2(relativePosition.x + cellWidth / 2, relativePosition.y - cellHeight / 2));
+                cells.Add(new Vector2(relativePosition.x - cellWidth / 2, relativePosition.y + cellHeight / 2));
+                cells.Add(new Vector2(relativePosition.x - cellWidth / 2, relativePosition.y - cellHeight / 2));
                 break;
         }
         crew = new CrewMember[cells.Count];
@@ -110,10 +109,7 @@ public abstract class Room : Entity
     public void AttachWeapon(Weapon weapon)
     {
         system = weapon;
-        roomIcon.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/Room Icons/cannon icon");
-        roomIcon.transform.parent = obj.transform;
-        SetLocation(0, 0, -0.01f, roomIcon);
-        Resize(0.5f, 0.5f, roomIcon);
+        roomIcon.ChangeSprite(SpritePath.cannonIcon);
     }
     public void RoomUpdate()
     {

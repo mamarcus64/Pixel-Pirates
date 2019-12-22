@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class BasicShip : Ship {
 
-    public BasicShip Init(Vector2 location)
+    public BasicShip Init(Vector2 location, Ship enemy, Player player)
     {
-        base.Init("Sprites/Ships/basic ship", new Vector2(12.8f, 4.32f), location, 6);
+        base.Init(SpritePath.demoShip, new Vector2(12.8f, 4.32f), location, 1, enemy, player);
         roomManager.SetOffset(new Vector2(0, -0.5f));
         List<Vector2> weaponPos = WeaponLayout();
         weaponManager.Add(obj.AddComponent<DemoWeapon>().Init(weaponPos[0], this));

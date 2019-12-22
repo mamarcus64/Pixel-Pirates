@@ -12,7 +12,7 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        if (true)//(!ShipFightManager.paused)
+        if (!ShipFightManager.paused)
         {
             RaycastHit2D[] hits;
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -27,7 +27,7 @@ public class InputManager : MonoBehaviour
                     if(DebugToggler.inputClick)
                         Debug.Log(hitEntity.GetType().Name + " pressed at absolute position: "
                             + hitEntity.GetAbsolutePosition().ToString("F2") + " and local position: " 
-                            + hitEntity.GetLocalPosition().ToString("F2") + " Parent: "
+                            + hitEntity.GetRelativePosition().ToString("F2") + " Parent: "
                             + (hitEntity.GetParent() == null ? "None" : hitEntity.GetParent().GetType().Name));
                 }
             }

@@ -21,8 +21,8 @@ public abstract class Projectile : Entity
     public void ProjectileUpdate()
     {
         EntityUpdate();
-        SetLocation(localPosition.x + direction.normalized.x * speed * Time.deltaTime,
-            localPosition.y + direction.normalized.y * speed * Time.deltaTime);
+        SetLocation(relativePosition.x + direction.normalized.x * speed * Time.deltaTime,
+            relativePosition.y + direction.normalized.y * speed * Time.deltaTime);
         if(target != null)
             if(new Vector2(obj.transform.position.x - target.GetObject().transform.position.x, 
                 obj.transform.position.y - target.GetObject().transform.position.y).magnitude <= epsilon)

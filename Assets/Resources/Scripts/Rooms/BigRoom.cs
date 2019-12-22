@@ -12,7 +12,7 @@ public class BigRoom : Room
     // Start is called before the first frame update
     public BigRoom Init(Vector2 location, Entity parent)
     {
-        base.Init("Sprites/Misc/demo room", location, parent);
+        base.Init(SpritePath.demoRoom, location, parent);
         return this;
     }
 

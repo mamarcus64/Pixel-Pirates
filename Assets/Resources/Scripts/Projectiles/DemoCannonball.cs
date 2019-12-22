@@ -16,7 +16,7 @@ public class DemoCannonball : Projectile
 
     public DemoCannonball Init(Vector2 location, Entity target, Ship shooter)
     {
-        base.Init("Sprites/Projectiles/demo cannonball", new Vector2(1, 1), location, target, shooter);
+        base.Init(SpritePath.demoCannonball, new Vector2(1, 1), location, target, shooter);
         speed = 8f;
         return this;
     }

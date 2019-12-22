@@ -38,10 +38,10 @@ public abstract class CrewMember : Entity
 
     public void Move()
     {
-        Vector2 direction = new Vector2(-this.localPosition.x + path.CurrentPoint().x, -this.localPosition.y + path.CurrentPoint().y).normalized;
+        Vector2 direction = new Vector2(-this.relativePosition.x + path.CurrentPoint().x, -this.relativePosition.y + path.CurrentPoint().y).normalized;
         Vector2 directionWithMagnitude = new Vector2(direction.x * speed * Time.deltaTime, direction.y * speed * Time.deltaTime);
-        if (Vector2.Distance(path.CurrentPoint(), localPosition) <= directionWithMagnitude.magnitude ||
-            Vector2.Distance(path.CurrentPoint(), localPosition) <= 0.01f) //sometimes directionWithMagnitude is 0 and distance is like 1E-9
+        if (Vector2.Distance(path.CurrentPoint(), relativePosition) <= directionWithMagnitude.magnitude ||
+            Vector2.Distance(path.CurrentPoint(), relativePosition) <= 0.01f) //sometimes directionWithMagnitude is 0 and distance is like 1E-9
         {
             SetLocation(path.CurrentPoint().x, path.CurrentPoint().y);
             if (path.HasNext())
@@ -49,7 +49,7 @@ public abstract class CrewMember : Entity
             else
                 path = null;
         }
-        SetLocation(localPosition.x + directionWithMagnitude.x, localPosition.y + directionWithMagnitude.y);
+        SetLocation(relativePosition.x + directionWithMagnitude.x, relativePosition.y + directionWithMagnitude.y);
     }
 
     public void SetShip(Ship ship)
@@ -69,13 +69,13 @@ public abstract class CrewMember : Entity
         Vector2 removedLocation = currentRoom.RemoveCrew(this);
         if (currentRoom == null) //just in case something goes terribly wrong
             path = Path.GetPath(ship.GetRoomManager(), new Vector2(0, 0), room.AddCrew(this));
-        else if (Vector2.Distance(removedLocation, localPosition) < Room.cellWidth / 2) //if crew has fully completed its previous path
+        else if (Vector2.Distance(removedLocation, relativePosition) < Room.cellWidth / 2) //if crew has fully completed its previous path
             path = Path.GetPath(ship.GetRoomManager(), removedLocation, room.AddCrew(this));
         else //if the crew is redirected while still traveling on its previous path
         {
             Vector2 closestCell = new Vector2(0, 0);
             foreach (Vector2 cell in ship.GetRoomManager().GetAllCells())
-                if (Vector2.Distance(cell, localPosition) < Vector2.Distance(closestCell, localPosition))
+                if (Vector2.Distance(cell, relativePosition) < Vector2.Distance(closestCell, relativePosition))
                     closestCell = cell;
             path = Path.GetPath(ship.GetRoomManager(), closestCell, room.AddCrew(this));
         }

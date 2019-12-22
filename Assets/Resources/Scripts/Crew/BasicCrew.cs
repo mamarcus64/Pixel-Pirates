@@ -7,7 +7,7 @@ public class BasicCrew : CrewMember
 
     public BasicCrew Init(Ship ship, Room room)
     {
-        base.Init("Sprites/Crew/demo crew", ship, room);
+        base.Init(SpritePath.demoCrew, ship, room);
         return this;
     }
     void Update()

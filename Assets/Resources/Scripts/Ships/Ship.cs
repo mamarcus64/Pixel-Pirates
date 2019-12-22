@@ -8,12 +8,16 @@ public abstract class Ship : Entity
     protected RoomManager roomManager;
     protected List<Icon> healthBar = new List<Icon>();
     protected Shield shield;
+    protected Player player;
+    protected Ship enemy;
     BasicCrew crew;
     BasicCrew crew2ElectricBugaloo;
 
-    public Ship Init(string spritepath, Vector2 size, Vector2 location, int health)
+    public Ship Init(string spritepath, Vector2 size, Vector2 location, int health, Ship enemy, Player player)
     {  
         base.Init(spritepath, size, location, "Ships", health);
+        this.player = player;
+        this.enemy = enemy;
         List<Vector3> roomPositions = RoomLayout();
         weaponManager = new WeaponManager(this);
         roomManager = new RoomManager(this);
@@ -32,7 +36,7 @@ public abstract class Ship : Entity
         }
         for (int i = 0; i < health; i++)
         {
-            healthBar.Add(obj.AddComponent<Icon>().Init("Sprites/Misc/green bar", new Vector2(0.25f, 0.25f), new Vector2(-width / 3 + 0.3f * i, height / 3),  "Green Bar", this));
+            healthBar.Add(obj.AddComponent<Icon>().Init(SpritePath.greenBar, new Vector2(0.25f, 0.25f), new Vector2(-width / 3 + 0.3f * i, height / 3),  "Green Bar", this));
         }
         crew = obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(0));
         crew2ElectricBugaloo = obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(1));
@@ -43,6 +47,7 @@ public abstract class Ship : Entity
 
     IEnumerator Load()
     {
+        //fix later - should not be load function anymore
         yield return new WaitForSeconds(Entity.bufferTime);
         weaponManager.Get(0).SetParent(this);
         weaponManager.Get(1).SetParent(this);
@@ -60,36 +65,33 @@ public abstract class Ship : Entity
         return roomManager;
     }
 
+    public List<Room> GetRooms()
+    {
+        return roomManager.GetAll();
+    }
+
+    public List<Weapon> GetWeapons()
+    {
+        return weaponManager.GetAll();
+    }
+
     public override void TakeDamage(int damage)
     {
         health -= damage;
         for (int i = 0; i < damage; i++) {
             if (healthBar.Count == 0)
                 break;
-            Destroy(healthBar[healthBar.Count - 1]);
+            healthBar[healthBar.Count - 1].Die();
             healthBar.RemoveAt(healthBar.Count - 1);
                 }
-        /*for (int i = 0; i < healthBar.Count; i++)
-        {
-            healthBar[i].transform.parent = obj.transform;
-            Resize(0.25f, 0.25f, healthBar[i]);
-            SetLocation(-width / 3 + 0.3f * i, height / 3, GetZPosition("Green Bar"), healthBar[i]);
-        }*/
         if (health == 0)
-            Destroy(obj);
+            Die();
     }
 
     public void ShipUpdate()
     {
         EntityUpdate();
-    }
-
-    public List<Room> getRooms()
-    {
-        List<Room> rooms = new List<Room>();
-        foreach (Entity e in roomManager.GetAll())
-            rooms.Add(e as Room);
-        return rooms;
+        player.Play(ShipFightManager.GetPlayerShip(), ShipFightManager.GetEnemyShip());
     }
 
     public Vector2 RoomGridToWorld(Vector3 roomPosition)

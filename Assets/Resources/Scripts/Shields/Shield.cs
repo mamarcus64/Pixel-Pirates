@@ -4,25 +4,12 @@ using UnityEngine;
 
 public class Shield : Entity
 {
-    protected Ship ship;
     protected int rechargeTime = 3;
     protected float recharge = 0;
 
-    public void SetShip(Ship newShip)
-    {
-        ship = newShip;
-        SetParent(ship);
-    }
-
     public Shield Init(Ship ship)
     {
-        base.Init("Sprites/Shields/demo shield", new Vector2(15, 5), new Vector2(0, 0), "Shields");
-        SetShip(ship);
-        if (obj != null)
-            localPosition = obj.transform.localPosition;
-        SetLocation(0, 0, -GetZPosition("Ships") + GetZPosition("Shields"));//need to assign again bc now it has the ship as a parent
-        //need to do the funky z-position stuff bc shield technically hasn't loaded in yet w/ correct z-value
-        Resize(ship.GetWidth() + 4, ship.GetHeight() + 3.5f);
+        base.Init(SpritePath.demoShield, new Vector2(ship.GetWidth() + 4, ship.GetHeight() + 3.5f), new Vector2(0, 0), "Shields", 1, ship);
         return this;
     }
 
@@ -64,19 +51,11 @@ public class Shield : Entity
     public void OnTriggerEnter2D(Collider2D collision)
     {
         Entity collided = collision.gameObject.GetComponent<EntityProxy>().GetEntity();
-        if(mRenderer.enabled && collided is Projectile projectile && projectile.GetShooter() != this.ship)
-            if(projectile.GetShooter() != this.GetShip())
+        if(mRenderer.enabled && collided is Projectile projectile && projectile.GetShooter() != GetParent())
+            if(projectile.GetShooter() != this.GetParent())
             {
                 projectile.Die();
                 health--;
             }
     }
-
-    public Ship GetShip()
-    {
-        return ship;
-    }
-
-    
-
 }

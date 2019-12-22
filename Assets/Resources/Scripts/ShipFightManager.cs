@@ -10,11 +10,11 @@ public class ShipFightManager : MonoBehaviour
     void Start()
     {
         paused = false;
-        playerShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, 2));
-
-        enemyShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, -2.5f));
-        //playerShip.SetPlayerOwned(true);
-        StartCoroutine(Load());
+        playerShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, 2), null, new User());
+        Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -50);
+        enemyShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, -2.5f), playerShip, new Enemy());
+        playerShip.SetPlayerOwned(true);
+        //StartCoroutine(Load());
     }
 
     public static IEnumerator Pause(float time)
@@ -24,27 +24,20 @@ public class ShipFightManager : MonoBehaviour
         paused = false;
     }
 
-    IEnumerator Load()
-    {
-        yield return new WaitForSeconds(Entity.bufferTime);
-        //playerShip.SetLocation(0, 2);
-        playerShip.SetPlayerOwned(true);
-        //enemyShip.SetLocation(0, -2.5f);
-    }
-
     void Update()
     {
-        
+        if (enemyShip == null)
+            Debug.Log("uh oh");
     }
 
-    public static List<Room> GetEnemyRooms()
+    public static Ship GetEnemyShip()
     {
-        return enemyShip.getRooms();
+        return enemyShip;
     }
 
-    public static List<Room> GetPlayerRooms()
+    public static Ship GetPlayerShip()
     {
-        return playerShip.getRooms();
+        return playerShip;
     }
 
     public static void GrayScale()
