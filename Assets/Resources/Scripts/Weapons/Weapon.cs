@@ -25,13 +25,11 @@ public abstract class Weapon : Entity
     public void WeaponUpdate()
     {
         EntityUpdate();
-        if (cooldownTimer < cooldown)
-            cooldownTimer += Time.deltaTime;
+        if (WeaponLoaded()) {
+			cooldownTimer += Time.deltaTime;
+		}
         DrawCooldownBar();
-        if (GetHealth() <= 0)
-            SetGrayScale(true);
-        else
-            SetGrayScale(false);
+        SetGrayScale(GetHealth() <= 0);
     }
 
     public bool WeaponLoaded()
