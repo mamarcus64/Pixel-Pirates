@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BigRoom : Room
 {
-    public override void OnFocusClick(Entity entity)
+    public override void OnFocusLost(Entity entity)
     {
 
     }

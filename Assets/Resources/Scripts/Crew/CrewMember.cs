@@ -27,7 +27,7 @@ public abstract class CrewMember : Entity
             }      
     }
 
-    public override void OnFocusClick(Entity entity)
+    public override void OnFocusLost(Entity entity)
     {
         if (entity is Room room)
         {
