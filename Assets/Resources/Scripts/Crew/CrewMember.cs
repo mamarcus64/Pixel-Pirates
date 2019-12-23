@@ -64,6 +64,10 @@ public abstract class CrewMember : Entity
         currentRoom.AddCrew(this);
     }
 
+	public Room GetRoom() {
+		return currentRoom;
+	}
+
     public void GoToRoom(Room room)
     {
         Vector2 removedLocation = currentRoom.RemoveCrew(this);

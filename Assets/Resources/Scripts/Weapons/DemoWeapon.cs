@@ -16,7 +16,15 @@ public class DemoWeapon : Weapon {
 	}
 
 	public override void OnFocusLost(Entity to) {
-		if (to != null && to.GetType().IsSubclassOf(typeof(Room)) && ShipFightManager.GetEnemyShip().GetRooms().Contains(to as Room) && WeaponLoaded()) {
+		if (to == null || !WeaponLoaded()) {
+			return;
+		}
+
+		if (to.GetType().IsSubclassOf(typeof(CrewMember))) {
+			to = (to as CrewMember).GetRoom();
+		}
+
+		if (to.GetType().IsSubclassOf(typeof(Room)) && ShipFightManager.GetEnemyShip().GetRooms().Contains(to as Room)) {
 			cooldownTimer = 0;
 			ShipFightManager.paused = true;
 			obj.AddComponent<SideSweep>().Init(this, to);
