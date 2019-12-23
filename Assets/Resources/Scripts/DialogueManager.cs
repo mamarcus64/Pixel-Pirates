@@ -2,39 +2,43 @@
 using UnityEngine.SceneManagement;
 public class DialogueManager : MonoBehaviour
 {
-    float width = 5;
-    float height = 5;
     GUIStyle justText;
     void Start()
     {
         Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -50);
         justText = new GUIStyle();
+        justText.wordWrap = true;
         Icon bg = gameObject.AddComponent<Icon>().Init(SpritePath.funnyImage, Camera.main.ScreenToWorldPoint
-            (new Vector2(Screen.width, Screen.height) * 2), new Vector2(0, 0), "", null);
-        bg.SetOpacity(0.2f);
+            (new Vector2(Screen.width, Screen.height)) * 2, new Vector2(0, 0), "Background", null);
+        Icon textBox = gameObject.AddComponent<Icon>().Init(SpritePath.woodTextbox, Camera.main.ScreenToWorldPoint
+            (new Vector2(Screen.width, Screen.height)), new Vector2(0, 0), "Textbox", null);
+        bg.SetOpacity(0.4f);
         //justText.normal.background = null;
     }
 
     // Update is called once per frame
-    
+    public Rect WorldToPixel(Vector2 pos, Vector2 size)
+    {
+        Vector2 pixelPos = Camera.main.WorldToScreenPoint(pos);
+        Vector2 pixelSize = Camera.main.WorldToScreenPoint(size) - Camera.main.WorldToScreenPoint(new Vector2(0, 0));
+        Rect rect = new Rect(pixelPos.x - pixelSize.x / 2, pixelPos.y - pixelSize.y / 2, pixelSize.x, pixelSize.y);
+        return rect;
+    }
 
     void OnGUI()
     {
-        // Make a background box
-        GUI.skin.button.wordWrap = true;
-        GUI.Label(new Rect(50, 10, 100, 500), "Loader Menu menu loader loader menu", justText);
-        //GUI.Box(new Rect(10, 10, 100, 90), "Loader Menu menu loader loader menu");
-
-        // Make the first button. If it is pressed, Application.Loadlevel (1) will be executed
-        if (GUI.Button(new Rect(20, 40, 80, 20), "Level 1", justText))
-        {
+        GUI.Button(WorldToPixel(new Vector2(0, 0), Camera.main.ScreenToWorldPoint
+            (new Vector2(Screen.width, Screen.height)) * 0.9f), "We love monky \n monky monky monky \n \n \n yes yes", justText);
+       // if (GUI.Button(WorldToPixel(new Vector2(-2f, 1), new Vector2(0.75f, 0.375f)), "Yes we do"))
+        if (GUI.Button(new Rect(300, 300, 50, 50), "Yes we do"))
+            {
             SceneManager.LoadSceneAsync("ShipFight");
         }
 
         // Make the second button.
-        if (GUI.Button(new Rect(20, 70, 80, 20), "Level 2"))
+        if (GUI.Button(new Rect(20, 70, 80, 20), "No"))
         {
-            Debug.Log("b2");
+            SceneManager.LoadSceneAsync("ShipFight");
         }
     }
 }

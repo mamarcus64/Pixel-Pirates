@@ -5,6 +5,7 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     static Entity focus;
+    public static int pixelScale = 100;
     void Start()
     {
 
@@ -28,7 +29,8 @@ public class InputManager : MonoBehaviour
                         Debug.Log(hitEntity.GetType().Name + " pressed at absolute position: "
                             + hitEntity.GetAbsolutePosition().ToString("F2") + " and local position: " 
                             + hitEntity.GetRelativePosition().ToString("F2") + " Parent: "
-                            + (hitEntity.GetParent() == null ? "None" : hitEntity.GetParent().GetType().Name));
+                            + (hitEntity.GetParent() == null ? "None " : hitEntity.GetParent().GetType().Name)
+                            + "Pixel: " + Input.mousePosition);
                 }
             }
             else if(Input.GetMouseButton(0))

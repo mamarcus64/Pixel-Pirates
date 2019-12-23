@@ -25,7 +25,7 @@ public abstract class Weapon : Entity
     public void WeaponUpdate()
     {
         EntityUpdate();
-        if (WeaponLoaded()) {
+        if (!WeaponLoaded()) {
 			cooldownTimer += Time.deltaTime;
 		}
         DrawCooldownBar();

@@ -16,5 +16,6 @@ public class SpritePath
     public static string demoShield = "Sprites/Shields/demo shield";
     public static string demoShip = "Sprites/Ships/basic ship";
     public static string funnyImage = "Sprites/Misc/funny image";
+    public static string woodTextbox = "Sprites/Misc/wooded textbox";
 
 }

@@ -19,7 +19,7 @@ public abstract class Entity : MonoBehaviour
     {
         switch(name)
         {
-            case "": return 10;
+            case "Background": return 1;
             case "Shields": return 0;
             case "Ships": return -1;
             case "Rooms": return -2;
@@ -33,6 +33,8 @@ public abstract class Entity : MonoBehaviour
             case "Aim Games.1": return -8.1f;
             case "Aim Games.2": return -8.2f;
             case "Aim Games.3": return -8.3f;
+            case "Textbox": return -9;
+            case "Text": return -10;
             default: Debug.Log("ERROR: object layer not found: " + name); return 1;
         }
     }
