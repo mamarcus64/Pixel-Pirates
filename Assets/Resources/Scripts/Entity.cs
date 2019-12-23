@@ -35,6 +35,7 @@ public abstract class Entity : MonoBehaviour
             case "Aim Games.3": return -8.3f;
             case "Textbox": return -9;
             case "Text": return -10;
+
             default: Debug.Log("ERROR: object layer not found: " + name); return 1;
         }
     }
@@ -259,10 +260,12 @@ public abstract class Entity : MonoBehaviour
         }
     }
 
-    public virtual void OnFocusClick(Entity entity)
-    {
-
+    public virtual void OnFocusLost(Entity entity) {
     }
+
+    public virtual void OnFocusGained(Entity entity) {
+    }
+
     public virtual void TakeDamage(int damage)
     {
         Debug.Log("Entity.TakeDamage method called. This shouldn't happen.");

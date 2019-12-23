@@ -44,12 +44,13 @@ public class InputManager : MonoBehaviour
     {
         if (focus != null)
         {
-            focus.OnFocusClick(entity);
+            focus.OnFocusLost(entity);
             focus.SetOutline(false);
             focus = null;
         }
         if (focus == null && entity != null && entity.PlayerOwned() && entity.wantsFocus)
         {
+			entity.OnFocusGained(focus);
             focus = entity;
             focus.SetOutline(true);
         }

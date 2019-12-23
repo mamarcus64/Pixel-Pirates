@@ -9,7 +9,7 @@ public class DemoCannonball : Projectile
         target.TakeDamage(1);
     }
 
-    public override void OnFocusClick(Entity entity)
+    public override void OnFocusLost(Entity entity)
     {
         
     }

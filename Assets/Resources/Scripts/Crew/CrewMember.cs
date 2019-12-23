@@ -27,7 +27,7 @@ public abstract class CrewMember : Entity
             }      
     }
 
-    public override void OnFocusClick(Entity entity)
+    public override void OnFocusLost(Entity entity)
     {
         if (entity is Room room)
         {
@@ -63,6 +63,10 @@ public abstract class CrewMember : Entity
         currentRoom = room;
         currentRoom.AddCrew(this);
     }
+
+	public Room GetRoom() {
+		return currentRoom;
+	}
 
     public void GoToRoom(Room room)
     {

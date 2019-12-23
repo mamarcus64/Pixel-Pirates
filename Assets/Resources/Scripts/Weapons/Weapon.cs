@@ -28,31 +28,26 @@ public abstract class Weapon : Entity
         if (!WeaponLoaded()) {
 			cooldownTimer += Time.deltaTime;
 		}
-        DrawCooldownBar();
-        SetGrayScale(GetHealth() <= 0);
-    }
+		DrawCooldownBar();
+	}
 
-    public bool WeaponLoaded()
-    {
-        return cooldownTimer >= cooldown;
-    }
-    
-    public void DrawCooldownBar()
-    {
-        greenBar.Resize(cooldownWidth * (cooldownTimer / cooldown), cooldownHeight);
-        greenBar.SetLocation(redBar.GetRelativePosition().x - cooldownWidth / 2
-         + (cooldownWidth * (cooldownTimer / cooldown) / 2), redBar.GetRelativePosition().y);
-        //redBar.SetLocation
-        //greenBar.transform.position = new Vector3( greenBar.transform.position.z);
-    }
+	public bool WeaponLoaded() {
+		return cooldownTimer >= cooldown;
+	}
 
-    public override void TakeDamage(int damage)
-    {
-        health -= damage;
-        if (health <= 0)
-            SetGrayScale(true);
-    }
+	public void DrawCooldownBar() {
+		greenBar.Resize(cooldownWidth * (cooldownTimer / cooldown), cooldownHeight);
+		greenBar.SetLocation(redBar.GetRelativePosition().x - cooldownWidth / 2
+		 + (cooldownWidth * (cooldownTimer / cooldown) / 2), redBar.GetRelativePosition().y);
+		//redBar.SetLocation
+		//greenBar.transform.position = new Vector3( greenBar.transform.position.z);
+	}
+
+	public override void TakeDamage(int damage) {
+		health -= damage;
+		SetGrayScale(health <= 0);
+	}
 
 
-    public abstract void Fire(Entity target, float result);
+	public abstract void Fire(Entity target, float result);
 }
