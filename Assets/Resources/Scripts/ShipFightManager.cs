@@ -10,9 +10,9 @@ public class ShipFightManager : MonoBehaviour
     void Start()
     {
         paused = false;
-        playerShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, 2), null, new User());
+        playerShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, 2), new User());
         Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -50);
-        enemyShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, -2.5f), playerShip, new Enemy());
+        enemyShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, -2.5f), new Enemy());
         playerShip.SetPlayerOwned(true);
         //StartCoroutine(Load());
     }

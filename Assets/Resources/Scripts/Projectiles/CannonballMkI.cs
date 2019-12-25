@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DemoCannonball : Projectile
+public class CannonballMkI : Projectile
 {
     public override void HitEffects()
     {
@@ -14,7 +14,7 @@ public class DemoCannonball : Projectile
         
     }
 
-    public DemoCannonball Init(Vector2 location, Entity target, Ship shooter)
+    public CannonballMkI Init(Vector2 location, Entity target, Ship shooter)
     {
         base.Init(SpritePath.demoCannonball, new Vector2(1, 1), location, target, shooter);
         speed = 8f;

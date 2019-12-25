@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Shield : Entity
 {
-    protected int rechargeTime = 3;
+    protected float rechargeTime = 2.4f;
     protected float recharge = 0;
 
     public Shield Init(Ship ship)

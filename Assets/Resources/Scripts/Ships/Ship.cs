@@ -6,21 +6,19 @@ public abstract class Ship : Entity
 {
     protected WeaponManager weaponManager;
     protected RoomManager roomManager;
+    protected CrewManager crewManager;
     protected List<Icon> healthBar = new List<Icon>();
     protected Shield shield;
     protected Player player;
-    protected Ship enemy;
-    BasicCrew crew;
-    BasicCrew crew2ElectricBugaloo;
 
-    public Ship Init(string spritepath, Vector2 size, Vector2 location, int health, Ship enemy, Player player)
+    public Ship Init(string spritepath, Vector2 size, Vector2 location, int health, Player player)
     {  
         base.Init(spritepath, size, location, "Ships", health);
         this.player = player;
-        this.enemy = enemy;
         List<Vector3> roomPositions = RoomLayout();
         weaponManager = new WeaponManager(this);
         roomManager = new RoomManager(this);
+        crewManager = new CrewManager(this);
         wantsFocus = false;
         foreach (Vector3 room in roomPositions)
         {
@@ -38,8 +36,8 @@ public abstract class Ship : Entity
         {
             healthBar.Add(obj.AddComponent<Icon>().Init(SpritePath.greenBar, new Vector2(0.25f, 0.25f), new Vector2(-width / 3 + 0.3f * i, height / 3),  "Green Bar", this));
         }
-        crew = obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(0));
-        crew2ElectricBugaloo = obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(1));
+        crewManager.Add(obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(0)));
+        crewManager.Add(obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(1)));
         shield = obj.AddComponent<Shield>().Init(this);
         StartCoroutine(Load());
         return this;

@@ -9,7 +9,8 @@ public class SpritePath
     public static string grayBar = "Sprites/Misc/gray bar";
     public static string blueSelector = "Sprites/Misc/blue selector";
     public static string cannonIcon = "Sprites/Room Icons/cannon icon";
-    public static string demoWeapon = "Sprites/Weapons/demo cannon";
+    public static string cannonMkI = "Sprites/Weapons/demo cannon";
+    public static string cannonMkII = "Sprites/Weapons/cannon mk II";
     public static string demoCrew = "Sprites/Crew/demo crew";
     public static string demoCannonball = "Sprites/Projectiles/demo cannonball";
     public static string demoRoom = "Sprites/Misc/demo room";
