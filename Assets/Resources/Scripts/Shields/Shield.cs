@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Shield : Entity {
-	protected float rechargeTime = 5f;
+	protected float rechargeTime = 4f;
 	protected float recharge = 0;
 
 	public Shield Init(Ship ship) {
