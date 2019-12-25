@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SideSweep : AimGame {
-
 	Icon selector;
 	Icon redZone;
 	List<Icon> greenZones = new List<Icon>();
 	float redZoneWidth = 2.25f, redZoneHeight = 1;
 	float selectorSpeed;
 	int direction = 1;
+
 	public SideSweep Init(Weapon weapon, Entity target) {
 		base.Init(weapon, target);
 		selectorSpeed = 1.5f + Random.value * 2;

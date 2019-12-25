@@ -48,7 +48,6 @@ public abstract class Entity : MonoBehaviour {
 				return -9;
 			case "Text":
 				return -10;
-
 			default:
 				Debug.Log("ERROR: object layer not found: " + name);
 				return 1;

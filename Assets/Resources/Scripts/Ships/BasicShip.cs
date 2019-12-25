@@ -19,7 +19,6 @@ public class BasicShip : Ship {
 		}
 	}
 
-
 	override public List<Vector2> WeaponLayout() {
 		List<Vector2> weaponPositions = new List<Vector2>();
 		weaponPositions.Add(new Vector2(-1, 1.25f));
