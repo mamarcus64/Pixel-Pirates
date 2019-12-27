@@ -29,7 +29,7 @@ public class SideSweep : AimGame {
 			direction = 1;
 		selector.Move(new Vector2(selectorSpeed * direction * Time.deltaTime, 0));
 
-		if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) {
+		if (/*Input.GetKeyDown(KeyCode.Space) || */Input.GetMouseButtonDown(0)) {
 			for (int i = 0; i < greenZones.Count; i++)
 				if (Vector2.Distance(selector.GetRelativePosition(), greenZones[i].GetRelativePosition())
 					< greenZones[i].GetWidth() / 1.9f)

@@ -5,12 +5,12 @@ using UnityEngine;
 public class InputManager : MonoBehaviour {
 	static Entity focus;
 	public static int pixelScale = 100;
+
 	void Start() {
 
 	}
 
 	void Update() {
-		if (!ShipFightManager.paused) {
 			RaycastHit2D[] hits;
 			Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			point.z = Camera.main.transform.position.z;
@@ -29,6 +29,9 @@ public class InputManager : MonoBehaviour {
 			} else if (Input.GetMouseButton(0)) {
 				GiveFocus(null);
 			}
+
+		if (Input.GetKeyDown(KeyCode.Space)) {
+			ShipFightManager.paused = ShipFightManager.userPaused = !ShipFightManager.userPaused;
 		}
 	}
 

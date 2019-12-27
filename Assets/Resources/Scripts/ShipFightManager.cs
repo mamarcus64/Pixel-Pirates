@@ -5,7 +5,11 @@ using UnityEngine;
 public class ShipFightManager : MonoBehaviour {
 	static Ship playerShip;
 	static Ship enemyShip;
+
 	public static bool paused;
+	public static bool userPaused;
+	private static Icon pausedIcon;
+
 	void Start() {
 		paused = false;
 		playerShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, 2), new User());
@@ -13,6 +17,9 @@ public class ShipFightManager : MonoBehaviour {
 		enemyShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, -2.5f), new Enemy());
 		playerShip.SetPlayerOwned(true);
 		//StartCoroutine(Load());
+
+		pausedIcon = gameObject.AddComponent<Icon>().Init(SpritePath.paused, new Vector2(4, 1), new Vector2(0, -3.5f), "Textbox", null, false);
+		pausedIcon.setVisible(false);
 	}
 
 	public static IEnumerator Pause(float time) {
@@ -22,8 +29,12 @@ public class ShipFightManager : MonoBehaviour {
 	}
 
 	void Update() {
-		if (enemyShip == null)
-			Debug.Log("uh oh");
+		if (enemyShip == null) {
+			Debug.Log("do the mario swing your arms from side to side");
+		}
+
+		pausedIcon.setVisible(userPaused);
+		Debug.Log(userPaused);
 	}
 
 	public static Ship GetEnemyShip() {

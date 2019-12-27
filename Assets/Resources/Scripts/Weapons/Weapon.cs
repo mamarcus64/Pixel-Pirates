@@ -62,5 +62,6 @@ public abstract class Weapon : Entity {
 	}
 
 	public abstract void Fire(Entity target, float result);
+
 	public abstract void UserGame(Entity to);
 }
