@@ -12,8 +12,8 @@ public class BasicShip : Ship {
 		base.Init(SpritePath.demoShip, new Vector2(12.8f, 4.32f), location, weapons, crew, 5, player);
 		roomManager.SetOffset(new Vector2(0, -0.5f));
 		List<Vector2> weaponPos = WeaponLayout();
-		weaponManager.Add(obj.AddComponent<CannonMkI>().Init(weaponPos[0], this));
-		weaponManager.Add(obj.AddComponent<CannonMkII>().Init(weaponPos[1], this));
+		weaponManager.Add(ShipFightManager.weaponHolder.AddComponent<CannonMkI>().Init(weaponPos[0], this));
+		weaponManager.Add(ShipFightManager.weaponHolder.AddComponent<CannonMkII>().Init(weaponPos[1], this));
 		return this;
 	}
 

@@ -43,12 +43,7 @@ public abstract class Ship : Entity {
 			healthBar.Add(obj.AddComponent<Icon>().Init(SpritePath.greenBar, new Vector2(0.25f, 0.25f), new Vector2(-width / 3 + 0.3f * i, height / 3), "Green Bar", this));
 		}
         if (crew == null) {
-            crewManager.Add(gameObject.AddComponent<BasicCrew>().Init(null, roomManager.Get(0)));
-            crewManager.Add(crewManager.Get(0).TransferTo<CrewMember>(this));
-             crewManager.Remove(0);
-              crewManager.Get(0).SetPlayerOwned(true);
-            crewManager.Get(0).SetShip(this);
-            crewManager.Get(0).GoToRoom(roomManager.Get(0));
+            crewManager.Add(ShipFightManager.crewHolder.AddComponent<BasicCrew>().Init(this, roomManager.Get(0)));
         }
 		shield = obj.AddComponent<Shield>().Init(this);
 		StartCoroutine(Load());

@@ -145,7 +145,7 @@ public abstract class Entity : MonoBehaviour {
 	}
 
 	public void setVisible(bool visible) {
-		mRenderer.enabled = visible;
+		spriteRenderer.enabled = visible;
 	}
 
 	public void Move(Vector2 direction) {
