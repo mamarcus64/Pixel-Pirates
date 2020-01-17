@@ -18,6 +18,7 @@ public abstract class Entity : MonoBehaviour {
 	protected Vector3 relativePosition;
 	protected bool playerOwned = false;
 	public bool wantsFocus = false;
+
 	public static float GetZPosition(string name) {
 		switch (name) {
 			case "Background":
@@ -143,6 +144,10 @@ public abstract class Entity : MonoBehaviour {
 		spriteRenderer.color = new Color(1, 1, 1, a);
 	}
 
+	public void setVisible(bool visible) {
+		mRenderer.enabled = visible;
+	}
+
 	public void Move(Vector2 direction) {
 		SetLocation(new Vector2(relativePosition.x + direction.x, relativePosition.y + direction.y));
 		relativePosition = obj.transform.position - (parent != null ? parent.GetAbsolutePosition() : Vector3.zero);
@@ -243,11 +248,9 @@ public abstract class Entity : MonoBehaviour {
 		}
 	}
 
-	public virtual void OnFocusLost(Entity entity) {
-	}
+	public virtual void OnFocusLost(Entity entity) {}
 
-	public virtual void OnFocusGained(Entity entity) {
-	}
+	public virtual void OnFocusGained(Entity entity) {}
 
 	public virtual void TakeDamage(int damage) {
 		Debug.Log("Entity.TakeDamage method called. This shouldn't happen.");

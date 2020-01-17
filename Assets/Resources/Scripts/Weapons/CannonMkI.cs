@@ -20,7 +20,10 @@ public class CannonMkI : Weapon {
     }
 
 	public override void Fire(Entity target, float result) {
-		ShipFightManager.paused = false;
+		if (!ShipFightManager.userPaused) {
+			ShipFightManager.paused = false;
+		}
+
 		cooldownTimer = 0;
 		if (result == 1) {
 			obj.AddComponent<BasicProjectile>().Init(SpritePath.demoCannonball, new Vector2(1, 1), 1, new Vector2(obj.transform.position.x, obj.transform.position.y), target, parent as Ship);

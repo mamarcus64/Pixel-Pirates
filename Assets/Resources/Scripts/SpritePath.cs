@@ -7,6 +7,7 @@ public class SpritePath {
 	public static string redBar = "Sprites/Misc/red bar";
 	public static string grayBar = "Sprites/Misc/gray bar";
 	public static string blueSelector = "Sprites/Misc/blue selector";
+	public static string paused = "Sprites/Misc/paused";
 	public static string cannonIcon = "Sprites/Room Icons/cannon icon";
 	public static string cannonMkI = "Sprites/Weapons/demo cannon";
 	public static string cannonMkII = "Sprites/Weapons/cannon mk II";
