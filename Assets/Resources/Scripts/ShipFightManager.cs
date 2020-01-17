@@ -12,13 +12,26 @@ public class ShipFightManager : MonoBehaviour {
 	public static bool userPaused;
 	private static Icon pausedIcon;
 
+    static List<CrewMember> SpawnCrewRealQuick() {
+        List<CrewMember> list = new List<CrewMember>();
+        list.Add(crewHolder.AddComponent<BasicCrew>().Init(null, null));
+        list.Add(crewHolder.AddComponent<BasicCrew>().Init(null, null));
+        return list;
+    }
+
+    static List<Weapon> SpawnWeaponsRealQuick() {
+        List<Weapon> weapons = new List<Weapon>();
+        weapons.Add(weaponHolder.AddComponent<CannonMkI>().Init(Vector2.zero, null));
+        weapons.Add(weaponHolder.AddComponent<CannonMkII>().Init(Vector2.zero, null));
+        return weapons;
+    }
 	void Start() {
 		paused = false;
         weaponHolder = gameObject.AddComponent<WeaponHolder>().Init() as WeaponHolder;
         crewHolder = gameObject.AddComponent<CrewHolder>().Init() as CrewHolder;
-        playerShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, 2), new User());
+        playerShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, 2), SpawnWeaponsRealQuick(), SpawnCrewRealQuick(), new User()); ;
 		Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -50);
-		enemyShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, -2.5f), new Enemy());
+		enemyShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, -2.5f), SpawnWeaponsRealQuick(), SpawnCrewRealQuick(), new Enemy());
 		playerShip.SetPlayerOwned(true);
 		//StartCoroutine(Load());
 
@@ -38,7 +51,6 @@ public class ShipFightManager : MonoBehaviour {
 		}
 
 		pausedIcon.setVisible(userPaused);
-		Debug.Log(userPaused);
 	}
 
 	public static Ship GetEnemyShip() {

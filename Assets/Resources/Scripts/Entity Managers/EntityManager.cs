@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EntityManager<E> {
+public abstract class EntityManager<E> where E : Entity{
 	protected Entity owner;
 	protected int maxSize;
 	protected List<E> entities = new List<E>();
@@ -44,14 +44,14 @@ public abstract class EntityManager<E> {
 	}
 
 	public void Place(Vector2 location, int i) {
-		(entities[i] as Entity).SetParent(owner);
-		(entities[i] as Entity).SetLocation(location);
+		entities[i].SetParent(owner);
+		entities[i].SetLocation(location);
 	}
 
 	public void Place(List<Vector2> locations) {
 		for (int i = 0; i < locations.Count && i < entities.Count; i++) {
-			(entities[i] as Entity).SetParent(owner);
-			(entities[i] as Entity).SetLocation(locations[i]);
+			entities[i].SetParent(owner);
+			entities[i].SetLocation(locations[i]);
 		}
 	}
 

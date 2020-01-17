@@ -8,8 +8,11 @@ public abstract class CrewMember : Entity {
 	protected Room currentRoom;
 	protected float speed = 0.5f;
 	public CrewMember Init(string spritePath, Ship ship, Room room) {
-		base.Init(spritePath, new Vector2(0.5f, 0.5f), room.AddCrew(this), "Crew", 10, ship);
-		currentRoom = room;
+        if(room != null)
+		    base.Init(spritePath, new Vector2(0.5f, 0.5f), room.AddCrew(this), "Crew", 10, ship);
+        else
+            base.Init(spritePath, new Vector2(0.5f, 0.5f), new Vector2(0, 0), "Crew", 10, ship);
+        currentRoom = room;
 		wantsFocus = true;
 		path = null;
         if(ship != null)
@@ -27,7 +30,7 @@ public abstract class CrewMember : Entity {
 	public override void OnFocusLost(Entity entity) {
 		if (entity is Room room) {
 			if (room != currentRoom)
-				GoToRoom(room);
+				WalkToRoom(room);
 		}
 	}
 
@@ -51,16 +54,11 @@ public abstract class CrewMember : Entity {
 		SetParent(ship);
 	}
 
-	public void SetRoom(Room room) {
-		currentRoom = room;
-		currentRoom.AddCrew(this);
-	}
-
 	public Room GetRoom() {
 		return currentRoom;
 	}
 
-	public void GoToRoom(Room room) {
+	public void WalkToRoom(Room room) {
 		Vector2 removedLocation = currentRoom.RemoveCrew(this);
 		if (currentRoom == null) //just in case something goes terribly wrong
 			path = Path.GetPath(ship.GetRoomManager(), new Vector2(0, 0), room.AddCrew(this));

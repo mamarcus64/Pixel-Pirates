@@ -10,10 +10,6 @@ public abstract class Ship : Entity {
 	protected Shield shield;
 	protected Player player;
 
-    public Ship Init(string spritepath, Vector2 size, Vector2 location, int health, Player player) {
-        return Init(spritepath, size, location, null, null, health, player);
-    }
-
     public Ship Init(string spritepath, Vector2 size, Vector2 location, List<Weapon> weapons, List<CrewMember> crew, int health, Player player) {
 		base.Init(spritepath, size, location, "Ships", health);
 		this.player = player;
@@ -42,26 +38,24 @@ public abstract class Ship : Entity {
 		for (int i = 0; i < health; i++) {
 			healthBar.Add(obj.AddComponent<Icon>().Init(SpritePath.greenBar, new Vector2(0.25f, 0.25f), new Vector2(-width / 3 + 0.3f * i, height / 3), "Green Bar", this));
 		}
-        if (crew == null) {
-            crewManager.Add(ShipFightManager.crewHolder.AddComponent<BasicCrew>().Init(this, roomManager.Get(0)));
+        for (int i = 0; i < crew.Count; i++) {
+            crew[i].SetShip(this);
+            crew[i].TeleportToRoom(roomManager.Get(CrewSpawnLayout()[i]));
+            crewManager.Add(crew[i]);
         }
-		shield = obj.AddComponent<Shield>().Init(this);
-		StartCoroutine(Load());
+        for (int i = 0; i < weapons.Count; i++) {
+            weapons[i].SetParent(this);
+            weaponManager.Add(weapons[i]);
+            weaponManager.Place(WeaponLayout());
+            WeaponRoomLayout()[i].AttachWeapon(weapons[i]);
+        }
+        shield = obj.AddComponent<Shield>().Init(this);
 		return this;
 	}
 
-	IEnumerator Load() {
-		//fix later - should not be load function anymore
-		yield return new WaitForSeconds(Entity.bufferTime);
-		weaponManager.Get(0).SetParent(this);
-		weaponManager.Get(1).SetParent(this);
-		weaponManager.Place(WeaponLayout()[0], 0);
-		weaponManager.Place(WeaponLayout()[1], 1);
-		(roomManager.Get(0) as Room).AttachWeapon(weaponManager.Get(0) as Weapon);
-		(roomManager.Get(1) as Room).AttachWeapon(weaponManager.Get(1) as Weapon);
-	}
-
 	public abstract List<Vector3> RoomLayout();
+    public abstract List<int> CrewSpawnLayout();
+    public abstract List<Room> WeaponRoomLayout();
 	public abstract List<Vector2> WeaponLayout();
 
 	public RoomManager GetRoomManager() {

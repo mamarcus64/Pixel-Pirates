@@ -4,16 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BasicShip : Ship {
-    public BasicShip Init(Vector2 location, Player player) {
-        return Init(location, null, null, player);
-    }
 
     public BasicShip Init(Vector2 location, List<Weapon> weapons, List<CrewMember> crew, Player player) {
 		base.Init(SpritePath.demoShip, new Vector2(12.8f, 4.32f), location, weapons, crew, 5, player);
 		roomManager.SetOffset(new Vector2(0, -0.5f));
-		List<Vector2> weaponPos = WeaponLayout();
-		weaponManager.Add(ShipFightManager.weaponHolder.AddComponent<CannonMkI>().Init(weaponPos[0], this));
-		weaponManager.Add(ShipFightManager.weaponHolder.AddComponent<CannonMkII>().Init(weaponPos[1], this));
 		return this;
 	}
 
@@ -31,6 +25,15 @@ public class BasicShip : Ship {
 		weaponPositions.Add(new Vector2(3.5f, -3));
 		return weaponPositions;
 	}
+
+    override public List<Room> WeaponRoomLayout() {
+        List<Room> rooms = new List<Room>();
+        rooms.Add(roomManager.Get(3));
+        rooms.Add(roomManager.Get(2));
+        rooms.Add(roomManager.Get(0));
+        rooms.Add(roomManager.Get(1));
+        return rooms;
+    }
 	override public List<Vector3> RoomLayout() {
 		List<Vector3> roomPositions = new List<Vector3>();
 		roomPositions.Add(new Vector3(-1, -1, 1));
@@ -39,4 +42,13 @@ public class BasicShip : Ship {
 		roomPositions.Add(new Vector3(0, 2, 2));
 		return roomPositions;
 	}
+
+    override public List<int> CrewSpawnLayout() {
+        List<int> spawnPositions = new List<int>();
+        spawnPositions.Add(0);
+        spawnPositions.Add(1);
+        spawnPositions.Add(0);
+        spawnPositions.Add(1);
+        return spawnPositions;
+    }
 }
