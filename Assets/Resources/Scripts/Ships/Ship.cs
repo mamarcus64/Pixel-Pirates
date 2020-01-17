@@ -58,7 +58,7 @@ public abstract class Ship : Entity {
     public abstract List<Room> WeaponRoomLayout();
 	public abstract List<Vector2> WeaponLayout();
 
-	public RoomManager GetRoomManager() {
+    public RoomManager GetRoomManager() {
 		return roomManager;
 	}
 
@@ -78,8 +78,11 @@ public abstract class Ship : Entity {
 			healthBar[healthBar.Count - 1].Die();
 			healthBar.RemoveAt(healthBar.Count - 1);
 		}
-		if (health == 0)
-			Die();
+        if (health <= 0) {
+            ShipFightManager.crewHolder.DestroyChildren(this);
+            ShipFightManager.weaponHolder.DestroyChildren(this);
+            Die();
+        }
 	}
 
 	public void ShipUpdate() {

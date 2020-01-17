@@ -36,28 +36,15 @@ public class InputManager : MonoBehaviour {
 	}
 
 	public static void GiveFocus(Entity entity) {
-        Debug.Log("focus: " + focus + " entity: " + entity);
         if (focus != null) {
-            Debug.Log("focus lost");
 			focus.OnFocusLost(entity);
 			focus.SetOutline(false);
 			focus = null;
 		}
-		//if (focus == null && entity != null && entity.PlayerOwned() && entity.wantsFocus) {
-        if (focus == null) {
-            Debug.Log("no focus");
-            if (entity != null) {
-                Debug.Log("entity not null");
-                if (true) {//entity.PlayerOwned()) {
-                    Debug.Log("Played owned");
-                    if (entity.wantsFocus) {
-                        Debug.Log("Wants focus");
-                        entity.OnFocusGained(focus);
-                        focus = entity;
-                        focus.SetOutline(true);
-                    }
-                }
-            }
+		if (focus == null && entity != null && entity.PlayerOwned() && entity.wantsFocus) {
+            entity.OnFocusGained(focus);
+            focus = entity;
+            focus.SetOutline(true);
 		}
 	}
 }

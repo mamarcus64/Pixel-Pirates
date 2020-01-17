@@ -11,7 +11,19 @@ public abstract class EntityHolder<E> : MonoBehaviour where E : Entity {
     }
 
     public F AddComponent<F>() where F : E {
-        
+
         return holder.AddComponent<F>();
+    }
+
+    public void DestroyChildren(Entity parent) {
+        foreach (Component c in holder.GetComponents<Entity>())
+            if ((c as Entity).GetParent() == parent)
+                (c as Entity).Die();
+    }
+
+    public void SetPlayerOwned(Entity parent) {
+        foreach (Component c in holder.GetComponents<Entity>())
+            if ((c as Entity).GetParent() == parent)
+                (c as Entity).SetPlayerOwned(true);
     }
 }
