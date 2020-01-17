@@ -10,7 +10,11 @@ public abstract class Ship : Entity {
 	protected Shield shield;
 	protected Player player;
 
-	public Ship Init(string spritepath, Vector2 size, Vector2 location, int health, Player player) {
+    public Ship Init(string spritepath, Vector2 size, Vector2 location, int health, Player player) {
+        return Init(spritepath, size, location, null, null, health, player);
+    }
+
+    public Ship Init(string spritepath, Vector2 size, Vector2 location, List<Weapon> weapons, List<CrewMember> crew, int health, Player player) {
 		base.Init(spritepath, size, location, "Ships", health);
 		this.player = player;
 		List<Vector3> roomPositions = RoomLayout();
@@ -38,9 +42,14 @@ public abstract class Ship : Entity {
 		for (int i = 0; i < health; i++) {
 			healthBar.Add(obj.AddComponent<Icon>().Init(SpritePath.greenBar, new Vector2(0.25f, 0.25f), new Vector2(-width / 3 + 0.3f * i, height / 3), "Green Bar", this));
 		}
-
-		crewManager.Add(obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(0)));
-		crewManager.Add(obj.AddComponent<BasicCrew>().Init(this, roomManager.Get(1)));
+        if (crew == null) {
+            crewManager.Add(gameObject.AddComponent<BasicCrew>().Init(null, roomManager.Get(0)));
+            crewManager.Add(crewManager.Get(0).TransferTo<CrewMember>(this));
+             crewManager.Remove(0);
+              crewManager.Get(0).SetPlayerOwned(true);
+            crewManager.Get(0).SetShip(this);
+            crewManager.Get(0).GoToRoom(roomManager.Get(0));
+        }
 		shield = obj.AddComponent<Shield>().Init(this);
 		StartCoroutine(Load());
 		return this;

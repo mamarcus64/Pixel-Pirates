@@ -1,11 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using UnityEditor;
 using UnityEngine;
 public abstract class Entity : MonoBehaviour {
 	public static float bufferTime = 0.0001f;
 	protected GameObject obj;
-	protected SpriteRenderer mRenderer;
-	protected Collider2D mCollider;
+	protected SpriteRenderer spriteRenderer;
+	protected Collider2D spriteCollider;
 	protected SpriteOutline outline;
 	protected Entity parent;
 	protected float width;
@@ -69,11 +73,11 @@ public abstract class Entity : MonoBehaviour {
 		obj = new GameObject(this.GetType().Name);
 		if (DebugToggler.entityCreated)
 			Debug.Log("New " + this.GetType().Name + " created");
-		mRenderer = obj.AddComponent<SpriteRenderer>();
+		spriteRenderer = obj.AddComponent<SpriteRenderer>();
 		if (spritepath != "")
-			mRenderer.sprite = Resources.Load<Sprite>(spritepath);
+			spriteRenderer.sprite = Resources.Load<Sprite>(spritepath);
 		else {
-			mRenderer.sprite = Resources.Load<Sprite>(SpritePath.grayBar); //can't have sprite be empty, bc other functions refer to sprite
+			spriteRenderer.sprite = Resources.Load<Sprite>(SpritePath.grayBar); //can't have sprite be empty, bc other functions refer to sprite
 			SetOpacity(0); //make it invisible instead
 		}
 		width = size.x;
@@ -88,17 +92,17 @@ public abstract class Entity : MonoBehaviour {
 		}
 		this.health = health;
 		if (wantsCollider) {
-			mCollider = obj.AddComponent<PolygonCollider2D>();
-			mCollider.isTrigger = true; //is unnecessary??
+			spriteCollider = obj.AddComponent<PolygonCollider2D>();
+			spriteCollider.isTrigger = true; //is unnecessary??
 		}
 		obj.AddComponent<EntityProxy>().Init(this);
 		outline = obj.AddComponent<SpriteOutline>();
-		mRenderer.material = Resources.Load<Material>("Sprites/SpritesOutline");
-		mRenderer.material.SetColor(0, new Color(mRenderer.material.color.r, mRenderer.material.color.g, mRenderer.material.color.b, 1));
+		spriteRenderer.material = Resources.Load<Material>("Sprites/SpritesOutline");
+		spriteRenderer.material.SetColor(0, new Color(spriteRenderer.material.color.r, spriteRenderer.material.color.g, spriteRenderer.material.color.b, 1));
 		outline.color = Color.blue;
 		outline.outlineSize = 10;
 		outline.enabled = false;
-		mRenderer.enabled = false;
+		spriteRenderer.enabled = false;
 		obj.AddComponent<Rigidbody2D>().gravityScale = 0;
 		relativePosition = obj.transform.position - (parent != null ? parent.GetAbsolutePosition() : Vector3.zero);
 		StartCoroutine(EnableRenderer());
@@ -106,14 +110,14 @@ public abstract class Entity : MonoBehaviour {
 	}
 
 	public void ChangeSprite(string spritepath) {
-		mRenderer.sprite = Resources.Load<Sprite>(spritepath);
+		spriteRenderer.sprite = Resources.Load<Sprite>(spritepath);
 		Resize(width, height);
 		SetOpacity(1);
 	}
 
 	IEnumerator EnableRenderer() {
 		yield return new WaitForSeconds(Entity.bufferTime);
-		mRenderer.enabled = true;
+		spriteRenderer.enabled = true;
 	}
 
 	public void EntityUpdate() {
@@ -130,13 +134,13 @@ public abstract class Entity : MonoBehaviour {
 	}
 	public void Resize(float x, float y) {
 		Vector3 parentScale = GetParentScale();
-		float xScale = x / mRenderer.sprite.bounds.size.x / parentScale.x;
-		float yScale = y / mRenderer.sprite.bounds.size.y / parentScale.y;
+		float xScale = x / spriteRenderer.sprite.bounds.size.x / parentScale.x;
+		float yScale = y / spriteRenderer.sprite.bounds.size.y / parentScale.y;
 		obj.transform.localScale = new Vector3(xScale, yScale, 1 / parentScale.z);
 	}
 
 	public void SetOpacity(float a) {
-		mRenderer.color = new Color(1, 1, 1, a);
+		spriteRenderer.color = new Color(1, 1, 1, a);
 	}
 
 	public void Move(Vector2 direction) {
@@ -182,18 +186,18 @@ public abstract class Entity : MonoBehaviour {
 	}
 
 	public void SetOutline(bool set) {
-		if (mRenderer.material != Resources.Load<Material>("Sprites/SpritesOutline"))
-			mRenderer.material = Resources.Load<Material>("Sprites/SpritesOutline");
+		if (spriteRenderer.material != Resources.Load<Material>("Sprites/SpritesOutline"))
+			spriteRenderer.material = Resources.Load<Material>("Sprites/SpritesOutline");
 		outline.enabled = set;
 	}
 
 	public virtual void SetGrayScale(bool set) {
 		if (set) {
-			if (mRenderer.material != Resources.Load<Material>("Sprites/GrayScale"))
-				mRenderer.material = Resources.Load<Material>("Sprites/GrayScale");
+			if (spriteRenderer.material != Resources.Load<Material>("Sprites/GrayScale"))
+				spriteRenderer.material = Resources.Load<Material>("Sprites/GrayScale");
 		} else {
-			if (mRenderer.material != Resources.Load<Material>("Sprites/SpritesOutline"))
-				mRenderer.material = Resources.Load<Material>("Sprites/SpritesOutline");
+			if (spriteRenderer.material != Resources.Load<Material>("Sprites/SpritesOutline"))
+				spriteRenderer.material = Resources.Load<Material>("Sprites/SpritesOutline");
 		}
 	}
 
@@ -222,7 +226,7 @@ public abstract class Entity : MonoBehaviour {
 	}
 
 	public virtual void GrayScale() {
-		mRenderer.material = Resources.Load<Material>("Sprites/GrayScale");
+		spriteRenderer.material = Resources.Load<Material>("Sprites/GrayScale");
 		Entity[] children = obj.GetComponentsInChildren<Entity>();
 		foreach (Entity child in children) {
 			child.GrayScale();
@@ -230,9 +234,9 @@ public abstract class Entity : MonoBehaviour {
 	}
 
 	public virtual void EndGrayScale() {
-		if (mRenderer == null)
+		if (spriteRenderer == null)
 			return;
-		mRenderer.material = Resources.Load<Material>("Sprites/SpritesOutline");
+		spriteRenderer.material = Resources.Load<Material>("Sprites/SpritesOutline");
 		Entity[] children = obj.GetComponentsInChildren<Entity>();
 		foreach (Entity child in children) {
 			child.EndGrayScale();
@@ -261,8 +265,30 @@ public abstract class Entity : MonoBehaviour {
 		Destroy(obj);
 	}
 
-	override
-	public string ToString() {
+    public T TransferTo<T>(Entity destination) where T : Entity {
+        T original = this as T;
+        System.Type type = original.GetType();
+        T copy = destination.GetObject().AddComponent(type) as T;
+        // Copied fields can be restricted with BindingFlags
+        BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+        System.Reflection.FieldInfo[] fields = type.GetFields(bindingFlags);
+        foreach (System.Reflection.FieldInfo field in fields) {
+            if (false) {//field.Name == "spriteRenderer") {
+                SpriteRenderer rend = field.GetValue(original) as SpriteRenderer;
+                string spritepath = AssetDatabase.GetAssetPath(rend.sprite);
+               // Destroy(rend);
+               // SpriteRenderer copyRend = obj.AddComponent<SpriteRenderer>();
+                rend.sprite = Resources.Load<Sprite>(spritepath);
+            } else {
+                field.SetValue(copy, field.GetValue(original));
+            }
+            Debug.Log("Field: " + field.Name + ", value: " + field.GetValue(copy));
+        }
+        //Destroy(original); //not using original.Die() because we want to keep the GameObject that original referred to
+        return copy;
+    }
+
+    override public string ToString() {
 		return this.GetType().Name + " at position: " + this.relativePosition;
 	}
 }

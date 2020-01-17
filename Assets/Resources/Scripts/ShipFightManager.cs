@@ -12,7 +12,6 @@ public class ShipFightManager : MonoBehaviour {
 		Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -50);
 		enemyShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, -2.5f), new Enemy());
 		playerShip.SetPlayerOwned(true);
-		//StartCoroutine(Load());
 	}
 
 	public static IEnumerator Pause(float time) {
@@ -22,8 +21,8 @@ public class ShipFightManager : MonoBehaviour {
 	}
 
 	void Update() {
-		if (enemyShip == null)
-			Debug.Log("uh oh");
+        if (enemyShip == null)
+            ;// Debug.Log("uh oh");
 	}
 
 	public static Ship GetEnemyShip() {

@@ -15,10 +15,10 @@ public class Shield : Entity {
 		if (!ShipFightManager.paused) {
 			EntityUpdate();
 			if (health <= 0) {
-				mRenderer.enabled = false;
+				spriteRenderer.enabled = false;
 				recharge += Time.deltaTime;
 			} else
-				mRenderer.enabled = true;
+				spriteRenderer.enabled = true;
 			if (recharge > rechargeTime) {
 				health++;
 				recharge = 0;
@@ -40,7 +40,7 @@ public class Shield : Entity {
 
 	public void OnTriggerEnter2D(Collider2D collision) {
 		Entity collided = collision.gameObject.GetComponent<EntityProxy>().GetEntity();
-		if (mRenderer.enabled && collided is Projectile projectile && projectile.GetShooter() != GetParent())
+		if (spriteRenderer.enabled && collided is Projectile projectile && projectile.GetShooter() != GetParent())
 			if (projectile.GetShooter() != this.GetParent()) {
 				projectile.Die();
 				health--;

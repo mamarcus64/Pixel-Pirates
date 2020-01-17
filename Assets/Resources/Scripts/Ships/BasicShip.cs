@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BasicShip : Ship {
-	public BasicShip Init(Vector2 location, Player player) {
-		base.Init(SpritePath.demoShip, new Vector2(12.8f, 4.32f), location, 5, player);
+    public BasicShip Init(Vector2 location, Player player) {
+        return Init(location, null, null, player);
+    }
+
+    public BasicShip Init(Vector2 location, List<Weapon> weapons, List<CrewMember> crew, Player player) {
+		base.Init(SpritePath.demoShip, new Vector2(12.8f, 4.32f), location, weapons, crew, 5, player);
 		roomManager.SetOffset(new Vector2(0, -0.5f));
 		List<Vector2> weaponPos = WeaponLayout();
 		weaponManager.Add(obj.AddComponent<CannonMkI>().Init(weaponPos[0], this));

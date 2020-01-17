@@ -12,7 +12,8 @@ public abstract class CrewMember : Entity {
 		currentRoom = room;
 		wantsFocus = true;
 		path = null;
-		SetShip(ship);
+        if(ship != null)
+		    SetShip(ship);
 		return this;
 	}
 

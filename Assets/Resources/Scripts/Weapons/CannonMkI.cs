@@ -5,7 +5,7 @@ using UnityEngine;
 public class CannonMkI : Weapon {
 	public CannonMkI Init(Vector2 location, Entity parent) {
 		Init(SpritePath.cannonMkI, new Vector2(1.5f, 1), location, 2, parent);
-		cooldown = 2.5f;
+		cooldown = 4.5f;
 		return this;
 	}
 

@@ -62,4 +62,12 @@ public abstract class EntityManager<E> {
 	public int Size() {
 		return entities.Count;
 	}
+    override public string ToString() {
+        string result = "[";
+        foreach (E item in GetAll())
+            result += item.ToString() + ", ";
+        result = result.Substring(0, result.Length - 2); //get rid of extra", " at the end
+        result += "]";
+        return result;
+    }
 }

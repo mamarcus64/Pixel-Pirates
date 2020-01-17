@@ -23,8 +23,8 @@ public class InputManager : MonoBehaviour {
 						Debug.Log(hitEntity.GetType().Name + " pressed at absolute position: "
 							+ hitEntity.GetAbsolutePosition().ToString("F2") + " and local position: "
 							+ hitEntity.GetRelativePosition().ToString("F2") + " Parent: "
-							+ (hitEntity.GetParent() == null ? "None " : hitEntity.GetParent().GetType().Name)
-							+ "Pixel: " + Input.mousePosition);
+							+ (hitEntity.GetParent() == null ? " None " : hitEntity.GetParent().GetType().Name)
+							+ " Pixel: " + Input.mousePosition);
 				}
 			} else if (Input.GetMouseButton(0)) {
 				GiveFocus(null);
@@ -33,15 +33,28 @@ public class InputManager : MonoBehaviour {
 	}
 
 	public static void GiveFocus(Entity entity) {
-		if (focus != null) {
+        Debug.Log("focus: " + focus + " entity: " + entity);
+        if (focus != null) {
+            Debug.Log("focus lost");
 			focus.OnFocusLost(entity);
 			focus.SetOutline(false);
 			focus = null;
 		}
-		if (focus == null && entity != null && entity.PlayerOwned() && entity.wantsFocus) {
-			entity.OnFocusGained(focus);
-			focus = entity;
-			focus.SetOutline(true);
+		//if (focus == null && entity != null && entity.PlayerOwned() && entity.wantsFocus) {
+        if (focus == null) {
+            Debug.Log("no focus");
+            if (entity != null) {
+                Debug.Log("entity not null");
+                if (true) {//entity.PlayerOwned()) {
+                    Debug.Log("Played owned");
+                    if (entity.wantsFocus) {
+                        Debug.Log("Wants focus");
+                        entity.OnFocusGained(focus);
+                        focus = entity;
+                        focus.SetOutline(true);
+                    }
+                }
+            }
 		}
 	}
 }
