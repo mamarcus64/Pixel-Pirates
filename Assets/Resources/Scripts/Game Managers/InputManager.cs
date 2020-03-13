@@ -31,7 +31,7 @@ public class InputManager : MonoBehaviour {
 			}
 
 		if (Input.GetKeyDown(KeyCode.Space)) {
-			ShipFightManager.paused = ShipFightManager.userPaused = !ShipFightManager.userPaused;
+			GameManager.paused = ShipFightManager.userPaused = !ShipFightManager.userPaused;
 		}
 	}
 
@@ -41,9 +41,9 @@ public class InputManager : MonoBehaviour {
 			focus.SetOutline(false);
 			focus = null;
 		}
-		if (focus == null && entity != null && entity.PlayerOwned() && entity.wantsFocus) {
-            entity.OnFocusGained(focus);
+		if (focus == null && entity != null && entity.playerOwned && entity.wantsFocus) {
             focus = entity;
+            focus.OnFocusGained();
             focus.SetOutline(true);
 		}
 	}

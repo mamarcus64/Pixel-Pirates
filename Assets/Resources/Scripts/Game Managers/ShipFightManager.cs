@@ -45,16 +45,18 @@ public class ShipFightManager : MonoBehaviour {
 		paused = false;
         weaponHolder = gameObject.AddComponent<WeaponHolder>().Init() as WeaponHolder;
         crewHolder = gameObject.AddComponent<CrewHolder>().Init() as CrewHolder;
-        playerShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(0, 2), SpawnWeaponsRealQuick(), SpawnCrewRealQuick(), new User());
+        playerShip = gameObject.AddComponent<BasicShip>().Init(new Vector2(2, 2), SpawnWeaponsRealQuick(), SpawnCrewRealQuick(), new User());
 		Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -50);
-        enemyShip = SpawnEnemyShip(new Vector2(0, -2.5f));
+        enemyShip = SpawnEnemyShip(new Vector2(2, -2.5f));
 		playerShip.SetPlayerOwned(true);
         weaponHolder.SetPlayerOwned(playerShip);
         crewHolder.SetPlayerOwned(playerShip);
+        ShipDisplay myDisplay = gameObject.AddComponent<ShipDisplay>().Init(new Vector2(4, 
+            Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y * 2), new Vector2(2 + Camera.main.ScreenToWorldPoint(Vector2.zero).x, 0), playerShip);
 		//StartCoroutine(Load());
 
-		pausedIcon = gameObject.AddComponent<Icon>().Init(SpritePath.paused, new Vector2(4, 1), new Vector2(0, -3.5f), "Textbox", null, false);
-		pausedIcon.setVisible(false);
+		//pausedIcon = gameObject.AddComponent<Icon>().Init(SpritePath.paused, new Vector2(4, 1), new Vector2(0, -3.5f), "Textbox", null, false);
+		//pausedIcon.setVisible(false);
 	}
 
 	public static IEnumerator Pause(float time) {
@@ -65,11 +67,12 @@ public class ShipFightManager : MonoBehaviour {
 
 	void Update() {
 		if (enemyShip == null) {
-            enemyShip = SpawnEnemyShip(new Vector2(0, -2.5f));
+            enemyShip = SpawnEnemyShip(new Vector2(2, -2.5f));
             Debug.Log("do the mario swing your arms from side to side");
 		}
 
-		pausedIcon.setVisible(userPaused);
+
+        //pausedIcon.setVisible(userPaused);
 	}
 
 	public static Ship GetEnemyShip() {

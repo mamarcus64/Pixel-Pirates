@@ -15,9 +15,12 @@ public class SingleRoom : Room {
 
 	// Update is called once per frame
 	void Update() {
-		if (!ShipFightManager.paused)
+		if (!GameManager.paused)
 			RoomUpdate();
 	}
 
+    public override string GetDisplayName() {
+        return "Single Room";
+    }
 
 }

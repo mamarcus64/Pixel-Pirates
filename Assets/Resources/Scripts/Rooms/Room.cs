@@ -7,7 +7,7 @@ public abstract class Room : Entity {
 	Icon roomIcon;
 	Entity system;
 	List<Vector2> cells;
-	CrewMember[] crew = new CrewMember[4];
+	CrewMember[] crew;
 	public static float cellWidth = 0.5f;
 	public static float cellHeight = 0.5f;
 	public Room Init(string spritePath, Vector2 location, Entity parent) {
@@ -23,21 +23,25 @@ public abstract class Room : Entity {
 		switch (this.GetType().Name) {
 			case "SingleRoom":
 				cells.Add(new Vector2(relativePosition.x, relativePosition.y));
+                crew = new CrewMember[1];
 				break;
 			case "LongRoom":
 				cells.Add(new Vector2(relativePosition.x - cellWidth / 2, relativePosition.y));
 				cells.Add(new Vector2(relativePosition.x + cellWidth / 2, relativePosition.y));
-				break;
+                crew = new CrewMember[2];
+                break;
 			case "TallRoom":
 				cells.Add(new Vector2(relativePosition.x, relativePosition.y + cellHeight / 2));
 				cells.Add(new Vector2(relativePosition.x, relativePosition.y - cellHeight / 2));
-				break;
+                crew = new CrewMember[2];
+                break;
 			case "BigRoom":
 				cells.Add(new Vector2(relativePosition.x + cellWidth / 2, relativePosition.y + cellHeight / 2));
 				cells.Add(new Vector2(relativePosition.x + cellWidth / 2, relativePosition.y - cellHeight / 2));
 				cells.Add(new Vector2(relativePosition.x - cellWidth / 2, relativePosition.y + cellHeight / 2));
 				cells.Add(new Vector2(relativePosition.x - cellWidth / 2, relativePosition.y - cellHeight / 2));
-				break;
+                crew = new CrewMember[4];
+                break;
 		}
 		crew = new CrewMember[cells.Count];
 		/* The array crew contains an index for each cell in a given room; unless there is a crew that is either in the room or 
@@ -64,6 +68,17 @@ public abstract class Room : Entity {
 		return new Vector2(100, 100);
 		//first available empty cell spot
 	}
+
+    public bool CrewInSpot(CrewMember crewmember) {
+        if (cells.Count == 0)
+            return false;
+        for (int i = 0; i < cells.Count; i++) {
+            if (crew[i] == crewmember)
+                if (Vector2.Distance(crewmember.GetRelativePosition(), cells[i]) < 0.01f)
+                    return true;
+        }
+        return false;
+    }
 
 	public List<Vector2> GetCells() {
 		return cells;

@@ -25,11 +25,17 @@ public abstract class CrewMember : Entity {
 		if (path != null && path.HasCurrent()) {
 			Move();
 		}
+        if (currentRoom != null) {
+            if (currentRoom.CrewInSpot(this))
+                ChangeSprites(SpritePath.demoCrew2);
+            else
+                ChangeSprites(SpritePath.demoCrew);
+        }
 	}
 
 	public override void OnFocusLost(Entity entity) {
 		if (entity is Room room) {
-			if (room != currentRoom)
+			if (room != currentRoom && ship.GetRooms().Contains(room))
 				WalkToRoom(room);
 		}
 	}

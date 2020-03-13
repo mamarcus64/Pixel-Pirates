@@ -15,9 +15,11 @@ public class LongRoom : Room {
 
 	// Update is called once per frame
 	void Update() {
-		if (!ShipFightManager.paused)
+		if (!GameManager.paused)
 			RoomUpdate();
 	}
 
-
+    public override string GetDisplayName() {
+        return "Long Room";
+    }
 }

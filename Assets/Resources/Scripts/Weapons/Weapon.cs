@@ -56,7 +56,7 @@ public abstract class Weapon : Entity {
 
 		if (to.GetType().IsSubclassOf(typeof(Room)) && ShipFightManager.GetEnemyShip().GetRooms().Contains(to as Room)) {
 			cooldownTimer = 0;
-			ShipFightManager.paused = true;
+			GameManager.paused = true;
 			UserGame(to);
 		}
 	}

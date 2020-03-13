@@ -10,7 +10,7 @@ public class CannonMkII : Weapon {
 	}
 
 	void Update() {
-		if (!ShipFightManager.paused) {
+		if (!GameManager.paused) {
 			WeaponUpdate();
 		}
 	}
@@ -21,7 +21,7 @@ public class CannonMkII : Weapon {
 
 	public override void Fire(Entity target, float result) {
 		if (!ShipFightManager.userPaused) {
-			ShipFightManager.paused = false;
+			GameManager.paused = false;
 		}
 
 		cooldownTimer = 0;
@@ -31,4 +31,8 @@ public class CannonMkII : Weapon {
 			//using absolute position, not relative position for projectile location b/c ball is not tied to a parent ship
 		}
 	}
+
+    public override string GetDisplayName() {
+        return "Cannon Mk II";
+    }
 }

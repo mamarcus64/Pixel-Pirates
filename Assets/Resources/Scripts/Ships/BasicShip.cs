@@ -6,13 +6,13 @@ using UnityEngine;
 public class BasicShip : Ship {
 
     public BasicShip Init(Vector2 location, List<Weapon> weapons, List<CrewMember> crew, Player player) {
-		base.Init(SpritePath.demoShip, new Vector2(12.8f, 4.32f), location, weapons, crew, 5, player);
+		base.Init(SpritePath.andyShip, new Vector2(12.8f, 4.32f), location, weapons, crew, 5, player);
 		roomManager.SetOffset(new Vector2(0, -0.5f));
 		return this;
 	}
 
 	void Update() {
-		if (!ShipFightManager.paused) {
+		if (!GameManager.paused) {
 			ShipUpdate();
 		}
 	}
@@ -50,5 +50,8 @@ public class BasicShip : Ship {
         spawnPositions.Add(0);
         spawnPositions.Add(1);
         return spawnPositions;
+    }
+    public override string GetDisplayName() {
+        return "Basic Ship";
     }
 }

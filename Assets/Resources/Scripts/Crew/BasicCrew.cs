@@ -9,8 +9,11 @@ public class BasicCrew : CrewMember {
 	}
 
 	void Update() {
-		if (!ShipFightManager.paused) {
+		if (!GameManager.paused) {
 			CrewUpdate();
 		}
 	}
+    public override string GetDisplayName() {
+        return "Basic Crew";
+    }
 }

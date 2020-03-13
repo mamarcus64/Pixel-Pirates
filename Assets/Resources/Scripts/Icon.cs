@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 
 public class Icon : Entity {
-	public Icon Init(string pathName, Vector2 size, Vector2 relativePosition, string layer, Entity parent) {
+    public override string GetDisplayName() {
+        return "Icon";
+    }
+
+    public Icon Init(string pathName, Vector2 size, Vector2 relativePosition, string layer, Entity parent) {
 		return Init(pathName, size, relativePosition, layer, parent, true);
 	}
 
@@ -11,8 +15,10 @@ public class Icon : Entity {
 	}
 
 	void Update() {
-		if (!ShipFightManager.paused) {
+		if (!GameManager.paused) {
 			EntityUpdate();
 		}
+
+
 	}
 }

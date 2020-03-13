@@ -70,6 +70,10 @@ public abstract class Ship : Entity {
 		return weaponManager.GetAll();
 	}
 
+    public List<CrewMember> GetCrewMembers() {
+        return crewManager.GetAll();
+    }
+
 	public override void TakeDamage(int damage) {
 		health -= damage;
 		for (int i = 0; i < damage; i++) {

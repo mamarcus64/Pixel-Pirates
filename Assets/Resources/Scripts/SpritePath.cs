@@ -12,10 +12,13 @@ public class SpritePath {
 	public static string cannonMkI = "Sprites/Weapons/demo cannon";
 	public static string cannonMkII = "Sprites/Weapons/cannon mk II";
 	public static string demoCrew = "Sprites/Crew/demo crew";
+    public static string demoCrew2 = "Sprites/Crew/demo crew 2";
 	public static string demoCannonball = "Sprites/Projectiles/demo cannonball";
 	public static string demoRoom = "Sprites/Misc/demo room";
 	public static string demoShield = "Sprites/Shields/demo shield";
-	public static string demoShip = "Sprites/Ships/basic ship";
+	public static string andyShip = "Sprites/Ships/andy's EPIC ship";
+    public static string demoShip = "Sprites/Ships/basic ship";
 	public static string funnyImage = "Sprites/Misc/funny image";
 	public static string woodTextbox = "Sprites/Misc/wooded textbox";
+    public static string redButton = "Sprites/Buttons/demo button";
 }

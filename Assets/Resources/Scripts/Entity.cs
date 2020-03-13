@@ -14,10 +14,11 @@ public abstract class Entity : MonoBehaviour {
 	protected Entity parent;
 	protected float width;
 	protected float height;
+    protected string spritepath;
 	protected int health;
 	protected Vector3 relativePosition;
-	protected bool playerOwned = false;
-	public bool wantsFocus = false;
+	public bool playerOwned;
+	public bool wantsFocus;
 
 	public static float GetZPosition(string name) {
 		switch (name) {
@@ -49,10 +50,12 @@ public abstract class Entity : MonoBehaviour {
 				return -8.2f;
 			case "Aim Games.3":
 				return -8.3f;
-			case "Textbox":
+			case "UIDisplay":
 				return -9;
-			case "Text":
-				return -10;
+            case "UIDisplay.1":
+                return -9.1f;
+            case "UIDisplay.2":
+                return -9.2f;
 			default:
 				Debug.Log("ERROR: object layer not found: " + name);
 				return 1;
@@ -75,6 +78,7 @@ public abstract class Entity : MonoBehaviour {
 		if (DebugToggler.entityCreated)
 			Debug.Log("New " + this.GetType().Name + " created");
 		spriteRenderer = obj.AddComponent<SpriteRenderer>();
+        this.spritepath = spritepath;
 		if (spritepath != "")
 			spriteRenderer.sprite = Resources.Load<Sprite>(spritepath);
 		else {
@@ -94,7 +98,7 @@ public abstract class Entity : MonoBehaviour {
 		this.health = health;
 		if (wantsCollider) {
 			spriteCollider = obj.AddComponent<PolygonCollider2D>();
-			spriteCollider.isTrigger = true; //is unnecessary??
+			spriteCollider.isTrigger = true; //VERY necessary - otherwise all other object will collide with each other and do funky physics things
 		}
 		obj.AddComponent<EntityProxy>().Init(this);
 		outline = obj.AddComponent<SpriteOutline>();
@@ -103,7 +107,7 @@ public abstract class Entity : MonoBehaviour {
 		outline.color = Color.blue;
 		outline.outlineSize = 10;
 		outline.enabled = false;
-		spriteRenderer.enabled = false;
+		//spriteRenderer.enabled = false;
 		obj.AddComponent<Rigidbody2D>().gravityScale = 0;
 		relativePosition = obj.transform.position - (parent != null ? parent.GetAbsolutePosition() : Vector3.zero);
 		StartCoroutine(EnableRenderer());
@@ -248,9 +252,23 @@ public abstract class Entity : MonoBehaviour {
 		}
 	}
 
+    public string GetSpritepath() { return spritepath; }
+
+    public string ChangeSprites(string newPath) {
+        string oldString = spritepath;
+        spriteRenderer.sprite = Resources.Load<Sprite>(newPath);
+        Resize(width, height);
+        Destroy(obj.GetComponent<PolygonCollider2D>());
+        spriteCollider = obj.AddComponent<PolygonCollider2D>();
+        spriteCollider.isTrigger = true;
+        return oldString;
+    }
+
 	public virtual void OnFocusLost(Entity entity) {}
 
-	public virtual void OnFocusGained(Entity entity) {}
+	public virtual void OnFocusGained() {}
+
+    public abstract string GetDisplayName();
 
 	public virtual void TakeDamage(int damage) {
 		Debug.Log("Entity.TakeDamage method called. This shouldn't happen.");
@@ -259,37 +277,11 @@ public abstract class Entity : MonoBehaviour {
 	public int GetHealth() {
 		return health;
 	}
-	public void OnCollisionEnter2D(Collision2D collision) {
-		//check to see if necessary 
-	}
 
 	public void Die() {
 		Destroy(this);
 		Destroy(obj);
 	}
-
-    public T TransferTo<T>(Entity destination) where T : Entity {
-        T original = this as T;
-        System.Type type = original.GetType();
-        T copy = destination.GetObject().AddComponent(type) as T;
-        // Copied fields can be restricted with BindingFlags
-        BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
-        System.Reflection.FieldInfo[] fields = type.GetFields(bindingFlags);
-        foreach (System.Reflection.FieldInfo field in fields) {
-            if (false) {//field.Name == "spriteRenderer") {
-                SpriteRenderer rend = field.GetValue(original) as SpriteRenderer;
-                string spritepath = AssetDatabase.GetAssetPath(rend.sprite);
-               // Destroy(rend);
-               // SpriteRenderer copyRend = obj.AddComponent<SpriteRenderer>();
-                rend.sprite = Resources.Load<Sprite>(spritepath);
-            } else {
-                field.SetValue(copy, field.GetValue(original));
-            }
-            Debug.Log("Field: " + field.Name + ", value: " + field.GetValue(copy));
-        }
-        //Destroy(original); //not using original.Die() because we want to keep the GameObject that original referred to
-        return copy;
-    }
 
     override public string ToString() {
 		return this.GetType().Name + " at position: " + this.relativePosition;

@@ -21,8 +21,12 @@ public class BasicProjectile : Projectile {
 	}
 
 	void Update() {
-		if (!ShipFightManager.paused) {
+		if (!GameManager.paused) {
 			ProjectileUpdate();
 		}
 	}
+
+    public override string GetDisplayName() {
+        return "Basic Projectile";
+    }
 }

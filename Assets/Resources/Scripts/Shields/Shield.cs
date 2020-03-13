@@ -12,7 +12,7 @@ public class Shield : Entity {
 	}
 
 	void Update() {
-		if (!ShipFightManager.paused) {
+		if (!GameManager.paused) {
 			EntityUpdate();
 			if (health <= 0) {
 				spriteRenderer.enabled = false;
@@ -46,4 +46,8 @@ public class Shield : Entity {
 				health--;
 			}
 	}
+
+    public override string GetDisplayName() {
+        return "Shield";
+    }
 }
